@@ -1,0 +1,17 @@
+import { Typography, Box } from '@mui/material';
+import { usePageLayout } from '../hooks/usePageLayout';
+
+export default function Notifications() {
+  usePageLayout();
+
+  return (
+    <Box sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Notifications
+      </Typography>
+      <Typography variant="body1" color="text.secondary">
+        Ici on affichera les notifications (nouvelles offres, activités, etc.)
+      </Typography>
+    </Box>
+  );
+}
