@@ -7,6 +7,7 @@ import Saved from '../pages/Saved';
 import Notifications from '../pages/Notifications';
 import Messages from '../pages/Messages';
 import Account from '../pages/Account';
+import AnnouncementDetail from '../pages/AnnouncementDetail';
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: 'account',
         element: <Account />,
+      },
+      {
+        path: 'announcement/:id',
+        element: <AnnouncementDetail />,
       },
     ],
   },

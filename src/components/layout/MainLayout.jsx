@@ -9,7 +9,7 @@ export default function MainLayout() {
   const { containerMaxWidth, disableGutters } = useLayout();
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
       <Navigation />
 
       <Box

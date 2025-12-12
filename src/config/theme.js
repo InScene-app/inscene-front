@@ -4,8 +4,9 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#F4A582',
+      main: '#FF8C5F',
       light: '#F8BEA3',
+      extraLight: '#FFF1EB',
       dark: '#E89164',
     },
     secondary: {
@@ -26,40 +27,28 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      'Arial',
-      'sans-serif',
-    ].join(','), //nunito pour le corps , quicksand pour les titres
+    fontFamily: 'Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
+
     h1: {
-      fontWeight: 700,
-      fontSize: '2rem',
-      color: '#2D3436',
+      fontFamily: 'Quicksand, sans-serif',
     },
     h2: {
-      fontWeight: 600,
-      fontSize: '1.5rem',
-      color: '#2D3436',
+      fontFamily: 'Quicksand, sans-serif',
     },
     h3: {
-      fontWeight: 600,
-      fontSize: '1.25rem',
-      color: '#2D3436',
+      fontFamily: 'Quicksand, sans-serif',
     },
+    h4: {
+      fontFamily: 'Quicksand, sans-serif',
+    },
+
     body1: {
-      fontSize: '0.95rem',
-      color: '#2D3436',
+      fontFamily: 'Nunito, sans-serif',
     },
-    body2: {
-      fontSize: '0.875rem',
-      color: '#5C5470',
-    },
+
     button: {
+      fontFamily: 'Nunito, sans-serif',
       textTransform: 'none',
-      fontWeight: 500,
     },
   },
   shape: {
