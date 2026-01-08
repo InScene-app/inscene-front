@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"D:\\\\Dev\\\\inscene-front\" show --stat 449acc3)",
+      "Bash(git -C \"D:\\\\Dev\\\\inscene-front\" branch -a)"
+    ]
+  }
+}
