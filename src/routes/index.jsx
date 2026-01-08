@@ -7,6 +7,7 @@ import Saved from '../pages/Saved';
 import Notifications from '../pages/Notifications';
 import Messages from '../pages/Messages';
 import Account from '../pages/Account';
+import Login from '@/pages/Login';
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
         path: 'account',
         element: <Account />,
       },
+      {
+        path: 'login',
+        element: <Login />,
+      }
     ],
   },
 ]);
