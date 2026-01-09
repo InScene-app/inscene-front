@@ -6,8 +6,15 @@ import { fr } from 'date-fns/locale';
 import AnnouncementImage from './AnnouncementImage';
 import AnnouncementTags from './AnnouncementTags';
 import SaveButton from './SaveButton';
+import { Announcement } from '../../types/announcement';
 
-export default function AnnouncementCard({ announcement, isSaved = false, onToggleSave }) {
+interface AnnouncementCardProps {
+  announcement: Announcement;
+  isSaved?: boolean;
+  onToggleSave?: (id: number) => void;
+}
+
+export default function AnnouncementCard({ announcement, isSaved = false, onToggleSave }: AnnouncementCardProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -63,7 +70,7 @@ export default function AnnouncementCard({ announcement, isSaved = false, onTogg
         {/* Auteur */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
           <Avatar
-            src={announcement.author?.avatar}
+            src={announcement.author?.avatar || undefined}
             alt={announcement.author?.name}
             sx={{ width: 26, height: 26 }}
           />

@@ -2,7 +2,12 @@ import { IconButton } from '@mui/material';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
-export default function SaveButton({ isSaved = false, onToggle }) {
+interface SaveButtonProps {
+  isSaved?: boolean;
+  onToggle?: () => void;
+}
+
+export default function SaveButton({ isSaved = false, onToggle }: SaveButtonProps) {
   return (
     <IconButton
       onClick={(e) => {

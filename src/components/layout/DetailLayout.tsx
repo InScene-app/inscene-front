@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -5,7 +6,14 @@ import ShareIcon from '@mui/icons-material/Share';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
-export default function DetailLayout({ children, isSaved = false, onToggleSave, onShare }) {
+interface DetailLayoutProps {
+  children: ReactNode;
+  isSaved?: boolean;
+  onToggleSave?: () => void;
+  onShare?: () => void;
+}
+
+export default function DetailLayout({ children, isSaved = false, onToggleSave, onShare }: DetailLayoutProps) {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));

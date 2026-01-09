@@ -1,4 +1,6 @@
-export const mockAnnouncements = [
+import { Announcement } from '../types/announcement';
+
+export const mockAnnouncements: Announcement[] = [
   {
     id: 1,
     title: 'Recherche monteur pour aftermovie',
@@ -9,7 +11,7 @@ export const mockAnnouncements = [
       avatar: null,
     },
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 heures ago
-    tags: ['Montage', 'Audiovisuel'], 
+    tags: ['Montage', 'Audiovisuel'],
     location: 'Lyon',
     isUrgent: false,
     contractType: 'contract',

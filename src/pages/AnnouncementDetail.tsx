@@ -5,11 +5,11 @@ import DetailLayout from '../components/layout/DetailLayout';
 import { mockAnnouncements } from '../data/mockAnnouncements';
 
 export default function AnnouncementDetail() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [isSaved, setIsSaved] = useState(false);
 
   // Trouver l'annonce correspondante
-  const announcement = mockAnnouncements.find((a) => a.id === parseInt(id));
+  const announcement = mockAnnouncements.find((a) => a.id === parseInt(id || '0'));
 
   const handleToggleSave = () => {
     setIsSaved((prev) => !prev);

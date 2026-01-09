@@ -1,7 +1,12 @@
 import { Box, Chip } from '@mui/material';
 import FlashOnIcon from '@mui/icons-material/FlashOn';
 
-export default function AnnouncementTags({ isUrgent = false, tags = [] }) {
+interface AnnouncementTagsProps {
+  isUrgent?: boolean;
+  tags?: string[];
+}
+
+export default function AnnouncementTags({ isUrgent = false, tags = [] }: AnnouncementTagsProps) {
   return (
     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
       {isUrgent && (

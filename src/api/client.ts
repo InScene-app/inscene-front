@@ -17,7 +17,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-export function setAuthToken(token) {
+export function setAuthToken(token: string | null) {
     if (token) {
         localStorage.setItem('access_token', token);
         api.defaults.headers.common.Authorization = `Bearer ${token}`;

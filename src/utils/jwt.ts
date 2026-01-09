@@ -1,4 +1,4 @@
-export function parseJwt(token) {
+export function parseJwt(token: string): Record<string, unknown> | null {
   if (!token) return null;
   try {
     const parts = token.split('.');

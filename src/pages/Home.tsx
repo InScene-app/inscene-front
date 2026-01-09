@@ -6,9 +6,9 @@ import { mockAnnouncements } from '../data/mockAnnouncements';
 
 export default function Home() {
   usePageLayout();
-  const [savedAnnouncements, setSavedAnnouncements] = useState([]);
+  const [savedAnnouncements, setSavedAnnouncements] = useState<number[]>([]);
 
-  const handleToggleSave = (announcementId) => {
+  const handleToggleSave = (announcementId: number) => {
     setSavedAnnouncements((prev) =>
       prev.includes(announcementId)
         ? prev.filter((id) => id !== announcementId)

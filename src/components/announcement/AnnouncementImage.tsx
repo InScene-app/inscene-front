@@ -1,6 +1,11 @@
-import { Box, CardMedia } from '@mui/material';
+import { CardMedia } from '@mui/material';
 
-export default function AnnouncementImage({ imageUrl, title }) {
+interface AnnouncementImageProps {
+  imageUrl: string | null;
+  title?: string;
+}
+
+export default function AnnouncementImage({ imageUrl, title }: AnnouncementImageProps) {
   if (!imageUrl) return null;
 
   return (

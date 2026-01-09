@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import api, { setAuthToken } from '../api/client';
 import { parseJwt } from '../utils/jwt';
 import { useNavigate } from 'react-router-dom';
 
+interface DecodedToken {
+  [key: string]: unknown;
+}
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [decoded, setDecoded] = useState(null);
-  const [error, setError] = useState(null);
+  const [decoded, setDecoded] = useState<DecodedToken | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     try {
@@ -26,8 +30,13 @@ export default function Login() {
         setError('No token returned from server');
       }
       navigate('/');
-    } catch (e) {
-      setError(e?.response?.data?.message || e.message || 'Login failed');
+    } catch (e: unknown) {
+      if (e && typeof e === 'object' && 'response' in e) {
+        const error = e as { response?: { data?: { message?: string } }; message?: string };
+        setError(error?.response?.data?.message || error.message || 'Login failed');
+      } else {
+        setError('Login failed');
+      }
     }
   };
 
@@ -46,6 +55,6 @@ export default function Login() {
         <button type="submit">Login</button>
       </form>
       {error && <div style={{ color: 'red' }}>{error}</div>}
-      </div>
+    </div>
   );
 }

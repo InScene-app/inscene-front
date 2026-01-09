@@ -6,8 +6,15 @@ import { fr } from 'date-fns/locale';
 import AnnouncementImage from './AnnouncementImage';
 import AnnouncementTags from './AnnouncementTags';
 import SaveButton from './SaveButton';
+import { Announcement } from '../../types/announcement';
 
-export default function AnnouncementCardCompact({ announcement, isSaved = false, onToggleSave }) {
+interface AnnouncementCardCompactProps {
+  announcement: Announcement;
+  isSaved?: boolean;
+  onToggleSave?: (id: number) => void;
+}
+
+export default function AnnouncementCardCompact({ announcement, isSaved = false, onToggleSave }: AnnouncementCardCompactProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
