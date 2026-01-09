@@ -75,11 +75,11 @@ export default function AnnouncementDetail() {
     <DetailLayout isSaved={isSaved} onToggleSave={handleToggleSave}>
       <Box sx={{ p: 2.5 }}>
         {/* Auteur avec avatar */}
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 1.5, 
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
             mb: 2,
             cursor: announcement?.author?.id ? 'pointer' : 'default',
             '&:hover': announcement?.author?.id ? {
