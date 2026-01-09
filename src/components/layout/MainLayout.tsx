@@ -26,7 +26,7 @@ export default function MainLayout() {
           maxWidth={containerMaxWidth}
           disableGutters={disableGutters}
           sx={{
-            px: isMobile ? 2 : 3,
+            px: isMobile ? 2.25 : 3,
           }}
         >
           <Outlet />

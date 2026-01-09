@@ -4,9 +4,12 @@ import FlashOnIcon from '@mui/icons-material/FlashOn';
 interface AnnouncementTagsProps {
   isUrgent?: boolean;
   tags?: string[];
+  variant?: 'default' | 'detail';
 }
 
-export default function AnnouncementTags({ isUrgent = false, tags = [] }: AnnouncementTagsProps) {
+export default function AnnouncementTags({ isUrgent = false, tags = [], variant = 'default' }: AnnouncementTagsProps) {
+  const isDetail = variant === 'detail';
+
   return (
     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
       {isUrgent && (
@@ -38,7 +41,8 @@ export default function AnnouncementTags({ isUrgent = false, tags = [] }: Announ
           sx={{
             fontSize: '14px',
             fontWeight: 500,
-            backgroundColor: 'background.white',
+            backgroundColor: isDetail ? 'background.middle' : 'background.white',
+            color: isDetail ? 'text.secondary' : 'text.primary',
             border: 'none',
             '& .MuiChip-label': {
               px: 1,
@@ -53,7 +57,8 @@ export default function AnnouncementTags({ isUrgent = false, tags = [] }: Announ
           sx={{
             fontSize: '14px',
             fontWeight: 500,
-            backgroundColor: 'background.white',
+            backgroundColor: isDetail ? 'background.middle' : 'background.white',
+            color: isDetail ? 'text.secondary' : 'text.primary',
             border: 'none',
             '& .MuiChip-label': {
               px: 1,

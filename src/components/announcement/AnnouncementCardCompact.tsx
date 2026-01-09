@@ -1,12 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Box, Typography, Stack } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import AnnouncementImage from './AnnouncementImage';
 import AnnouncementTags from './AnnouncementTags';
 import SaveButton from './SaveButton';
 import { Announcement } from '../../types/announcement';
+import { formatRelativeDate } from '../../utils/dateFormat';
 
 interface AnnouncementCardCompactProps {
   announcement: Announcement;
@@ -18,13 +17,11 @@ export default function AnnouncementCardCompact({ announcement, isSaved = false,
   const navigate = useNavigate();
 
   const handleClick = () => {
+    window.scrollTo(0, 0);
     navigate(`/announcement/${announcement.id}`);
   };
 
-  const formattedDate = formatDistanceToNow(new Date(announcement.createdAt), {
-    addSuffix: true,
-    locale: fr,
-  });
+  const formattedDate = formatRelativeDate(announcement.createdAt);
 
   return (
     <Card

@@ -1,12 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Box, Typography, Avatar, Stack } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import AnnouncementImage from './AnnouncementImage';
 import AnnouncementTags from './AnnouncementTags';
 import SaveButton from './SaveButton';
 import { Announcement } from '../../types/announcement';
+import { formatRelativeDate } from '../../utils/dateFormat';
 
 interface AnnouncementCardProps {
   announcement: Announcement;
@@ -18,21 +17,11 @@ export default function AnnouncementCard({ announcement, isSaved = false, onTogg
   const navigate = useNavigate();
 
   const handleClick = () => {
+    window.scrollTo(0, 0);
     navigate(`/announcement/${announcement.id}`);
   };
 
-  const formattedDate = formatDistanceToNow(new Date(announcement.createdAt), {
-    locale: fr,
-  })
-    .replace('environ ', '')
-    .replace(' jours', 'j')
-    .replace(' jour', 'j')
-    .replace(' heures', 'h')
-    .replace(' heure', 'h')
-    .replace(' minutes', 'min')
-    .replace(' minute', 'min');
-
-  const displayDate = `Il y a ${formattedDate}`;
+  const displayDate = formatRelativeDate(announcement.createdAt);
 
   return (
     <Card

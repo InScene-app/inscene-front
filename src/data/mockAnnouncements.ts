@@ -14,12 +14,11 @@ export const mockAnnouncements: Announcement[] = [
     tags: ['Montage', 'Audiovisuel'],
     location: 'Lyon',
     isUrgent: false,
-    contractType: 'contract',
+    contractType: 'prestation',
     imageUrl: null,
-    // exactSalary
-    // minSalary
-    // maxSalary
-
+    minSalary: 500,
+    maxSalary: 800,
+    applicantsCount: 12,
   },
   {
     id: 2,
@@ -36,6 +35,8 @@ export const mockAnnouncements: Announcement[] = [
     isUrgent: true,
     contractType: 'full-time',
     imageUrl: null,
+    exactSalary: 2500,
+    applicantsCount: 34,
   },
   {
     id: 3,
@@ -52,10 +53,11 @@ export const mockAnnouncements: Announcement[] = [
     isUrgent: false,
     contractType: 'internship',
     imageUrl: null,
+    applicantsCount: 5,
   },
   {
     id: 4,
-    title: 'Monteur montublicitaire',
+    title: 'Monteur publicitaire',
     description:
       'Agence de communication recherche monteur expérimenté pour la création de spots publicitaires créatifs et impactants.',
     author: {
@@ -66,7 +68,9 @@ export const mockAnnouncements: Announcement[] = [
     tags: ['Montage'],
     location: 'Marseille',
     isUrgent: true,
-    contractType: 'contract',
+    contractType: 'prestation',
     imageUrl: null,
+    minSalary: 1200,
+    applicantsCount: 23,
   },
 ];

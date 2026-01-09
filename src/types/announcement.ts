@@ -12,9 +12,10 @@ export interface Announcement {
   tags: string[];
   location: string;
   isUrgent: boolean;
-  contractType: 'contract' | 'full-time' | 'internship' | 'part-time';
+  contractType: 'prestation' | 'full-time' | 'internship' | 'part-time';
   imageUrl: string | null;
   exactSalary?: number;
   minSalary?: number;
   maxSalary?: number;
+  applicantsCount?: number;
 }
