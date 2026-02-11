@@ -18,8 +18,8 @@ export default function Onboarding() {
         if (!isDevMode) {
             localStorage.setItem('hasSeenOnboarding', 'true');
         }
-        // Rediriger vers account (WelcomeStep)
-        navigate('/account');
+        // Rediriger vers profile-setup (WelcomeStep sans navbar)
+        navigate('/profile-setup');
     };
 
     return (

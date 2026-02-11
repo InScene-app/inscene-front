@@ -1,70 +1,102 @@
-import { Box, Typography, Button } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Box, Typography } from '@mui/material';
+import PrimaryButton from '../../common/PrimaryButton';
+import ProgressBar from '../ProgressBar';
 
 interface CompletionStepProps {
   onViewProfile: () => void;
   onComplete: () => void;
+  progress: number;
 }
 
-export default function CompletionStep({ onViewProfile, onComplete }: CompletionStepProps) {
+export default function CompletionStep({ onViewProfile, onComplete, progress }: CompletionStepProps) {
   return (
     <Box
       sx={{
+        backgroundColor: '#F2F6FC',
+        minHeight: '100dvh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '60vh',
-        textAlign: 'center',
-        py: 4
+        py: '24px',
+        gap: '20px',
       }}
     >
-      <CheckCircleIcon
-        sx={{
-          fontSize: 80,
-          color: 'primary.main',
-          mb: 3
-        }}
-      />
+      {/* Spacer haut */}
+      <Box sx={{ flex: 1 }} />
 
-      <Typography
-        variant="h3"
-        gutterBottom
-        sx={{
-          fontWeight: 700,
-          mb: 4,
-          color: 'text.primary'
-        }}
-      >
-        C'est parti !
-      </Typography>
+      <Box sx={{ px: '36px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
+        {/* Titre */}
+        <Typography
+          variant="inherit"
+          sx={{
+            fontFamily: 'Quicksand, sans-serif',
+            fontSize: '24px',
+            fontWeight: 600,
+            textAlign: 'center',
+            color: '#000000',
+          }}
+        >
+          C'est parti !
+        </Typography>
 
-      <Button
-        variant="contained"
-        size="large"
-        onClick={onViewProfile}
-        sx={{
-          mb: 6,
-          px: 8,
-          py: 2,
-          fontSize: '1.2rem',
-          textTransform: 'none',
-          borderRadius: '25px'
-        }}
-      >
-        Voir mon profil
-      </Button>
+        {/* Image */}
+        <Box
+          component="img"
+          src="/images/onboarding/onboarding-hand-check.jpg"
+          alt="Bienvenue"
+          sx={{
+            width: '331px',
+            height: '276px',
+            borderRadius: '35px',
+            objectFit: 'cover',
+            objectPosition: 'center',
+          }}
+        />
 
-      <Button
-        variant="text"
-        onClick={onComplete}
-        sx={{
-          textTransform: 'none',
-          color: 'text.secondary'
-        }}
-      >
-        Terminer
-      </Button>
+        {/* Texte */}
+        <Typography
+          variant="inherit"
+          sx={{
+            fontFamily: 'Nunito, sans-serif',
+            fontSize: '17px',
+            fontWeight: 400,
+            textAlign: 'center',
+            color: '#000000',
+            lineHeight: 1.6,
+          }}
+        >
+          <strong>Ton profil et ton fil d'actualité sont à jour.</strong>
+          <br />
+          Tu peux modifier ton profil à tout moment
+          <br />
+          Bienvenue dans la communauté InScène !
+        </Typography>
+
+        {/* Bouton voir mon profil */}
+        <PrimaryButton
+          onClick={onViewProfile}
+          sx={{
+            backgroundColor: 'transparent',
+            color: '#FF8C5F',
+            border: '1px solid #FF8C5F',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 140, 95, 0.04)',
+            },
+          }}
+        >
+          Voir mon profil
+        </PrimaryButton>
+      </Box>
+
+      {/* Spacer bas */}
+      <Box sx={{ flex: 1 }} />
+
+      {/* Barre d'avancement + Bouton Terminer */}
+      <Box sx={{ px: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <ProgressBar progress={progress} />
+        <PrimaryButton fullWidth onClick={onComplete}>
+          Terminer
+        </PrimaryButton>
+      </Box>
     </Box>
   );
 }

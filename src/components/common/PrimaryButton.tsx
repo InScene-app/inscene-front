@@ -11,9 +11,8 @@ export default function PrimaryButton({ children, fullWidth = false, sx, ...prop
       variant="contained"
       {...props}
       sx={{
-        py: '11px',
-        px: '26px',
-        fontSize: '17px',
+        padding: '6px 20px',
+        fontSize: '14px',
         fontWeight: 600,
         color: '#ffffff',
         textTransform: 'none',

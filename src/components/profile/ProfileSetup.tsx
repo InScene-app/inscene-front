@@ -1,58 +1,43 @@
 import { JSX, useState } from 'react';
 import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import WelcomeStep from './steps/WelcomeStep';
 import PersonalInfoStep from './steps/PersonalInfoStep';
 import ProfessionalStep from './steps/ProfessionalStep';
 import AchievementsStep from './steps/AchievementsStep';
 import CompletionStep from './steps/CompletionStep';
-import ProgressBar from './ProgressBar';
-
-interface PortfolioItem {
-  title: string;
-  description: string;
-  url: string;
-}
+import api from '../../api/client';
+import { setAuthToken } from '../../api/client';
+import { parseJwt } from '../../utils/jwt';
 
 export interface ProfileData {
   // Informations personnelles
   firstName: string;
   lastName: string;
-  dateOfBirth: string;
   email: string;
-  description: string;
-  avatarUrl: string;
+  password: string;
 
   // Profil professionnel
-  profession: string;
   experience: string;
-  skills: string[];
-  socialLinks: string[];
+  location: string;
+  jobCodes: string[];
 
   // Réalisations
-  achievements: string[];
-  portfolio: PortfolioItem[];
+  socialLinks: string[];
 }
 
 export default function ProfileSetup() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [profileData, setProfileData] = useState<ProfileData>({
-    // Informations personnelles
     firstName: '',
     lastName: '',
-    dateOfBirth: '',
     email: '',
-    description: '',
-    avatarUrl: '',
-
-    // Profil professionnel
-    profession: '',
+    password: '',
     experience: '',
-    skills: [],
+    location: '',
+    jobCodes: [],
     socialLinks: [],
-
-    // Réalisations
-    achievements: [],
-    portfolio: []
   });
 
   const handleNext = (): void => {
@@ -67,9 +52,43 @@ export default function ProfileSetup() {
     setProfileData(prev => ({ ...prev, ...data }));
   };
 
-  const handleComplete = (): void => {
-    // TODO: Envoyer les données au backend
-    console.log('Profile data:', profileData);
+  const handleComplete = async (): Promise<void> => {
+    try {
+      // 1. Créer l'individual
+      await api.post('/individual', {
+        email: profileData.email,
+        password: profileData.password,
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+      });
+
+      // 2. Auto-login pour récupérer le JWT
+      const loginRes = await api.post('/auth/login', {
+        email: profileData.email,
+        password: profileData.password,
+      });
+      const token = loginRes.data?.access_token;
+      if (!token) throw new Error('No token');
+      setAuthToken(token);
+
+      const payload = parseJwt(token);
+      const userId = payload?.sub as number;
+
+      // 3. PATCH avec les données supplémentaires
+      const patchData: Record<string, unknown> = {};
+      if (profileData.experience) patchData.experience = profileData.experience;
+      if (profileData.location) patchData.location = [profileData.location];
+      if (profileData.jobCodes.length > 0) patchData.jobCodes = profileData.jobCodes;
+
+      if (Object.keys(patchData).length > 0) {
+        await api.patch(`/individual/${userId}`, patchData);
+      }
+
+      localStorage.setItem('profileCompleted', 'true');
+      navigate('/');
+    } catch (err: unknown) {
+      console.error('Erreur création profil:', err);
+    }
   };
 
   const getProgress = (): number => {
@@ -94,6 +113,7 @@ export default function ProfileSetup() {
             onUpdate={handleUpdateData}
             onNext={handleNext}
             onBack={handleBack}
+            progress={getProgress()}
           />
         );
       case 3:
@@ -103,6 +123,7 @@ export default function ProfileSetup() {
             onUpdate={handleUpdateData}
             onNext={handleNext}
             onBack={handleBack}
+            progress={getProgress()}
           />
         );
       case 4:
@@ -112,6 +133,7 @@ export default function ProfileSetup() {
             onUpdate={handleUpdateData}
             onNext={handleNext}
             onBack={handleBack}
+            progress={getProgress()}
           />
         );
       case 5:
@@ -119,6 +141,7 @@ export default function ProfileSetup() {
           <CompletionStep
             onViewProfile={() => {/* TODO: Navigate to profile */}}
             onComplete={handleComplete}
+            progress={getProgress()}
           />
         );
       default:
@@ -129,9 +152,6 @@ export default function ProfileSetup() {
   return (
     <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto' }}>
       {renderStep()}
-      {currentStep > 1 && (
-        <ProgressBar progress={getProgress()} />
-      )}
     </Box>
   );
 }

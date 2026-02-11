@@ -6,8 +6,8 @@ interface ProgressBarProps {
 
 export default function ProgressBar({ progress }: ProgressBarProps) {
   return (
-    <Box sx={{ mt: 4, mb: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+    <Box>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ width: '100%', mr: 1 }}>
           <LinearProgress
             variant="determinate"

@@ -7,9 +7,25 @@ import PrimaryButton from '../components/common/PrimaryButton';
 import SocialIcon from '../components/user/SocialIcon';
 import { getUserById } from '../api/userService';
 import { User } from '../types/user';
+import { parseJwt } from '../utils/jwt';
 
-export default function UserProfile() {
+interface UserProfileProps {
+    userId?: number;
+}
+
+export default function UserProfile({ userId: propUserId }: UserProfileProps = {}) {
     const { id } = useParams<{ id: string }>();
+
+    // Priorité : prop > URL param > JWT token
+    const resolvedId = propUserId ?? (id ? parseInt(id) : null);
+    const tokenId = (() => {
+        if (resolvedId) return resolvedId;
+        const token = localStorage.getItem('access_token');
+        const payload = token ? parseJwt(token) : null;
+        return payload?.sub as number | undefined;
+    })();
+    const finalId = resolvedId ?? tokenId;
+
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -17,11 +33,11 @@ export default function UserProfile() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            if (!id) return;
+            if (!finalId) return;
 
             try {
                 setLoading(true);
-                const data = await getUserById(parseInt(id));
+                const data = await getUserById(finalId);
                 console.log('User data:', data);
                 setUser(data);
                 setError(null);
@@ -34,7 +50,7 @@ export default function UserProfile() {
         };
 
         fetchUser();
-    }, [id]);
+    }, [finalId]);
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
         setActiveTab(newValue);
