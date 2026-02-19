@@ -1,21 +1,24 @@
-import { Box, Chip } from '@mui/material';
+import { Chip } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EuroIcon from '@mui/icons-material/Euro';
 import WorkIcon from '@mui/icons-material/Work';
+import { ContractType } from '../../types/announcement';
 
 interface AnnouncementInfoTagsProps {
   location: string;
-  contractType: 'prestation' | 'full-time' | 'internship' | 'part-time';
+  contractType: ContractType;
   exactSalary?: number;
   minSalary?: number;
   maxSalary?: number;
 }
 
-const contractTypeLabels: Record<string, string> = {
-  'prestation': 'Prestation',
-  'full-time': 'Temps plein',
-  'internship': 'Stage',
-  'part-time': 'Temps partiel',
+const contractTypeLabels: Record<ContractType, string> = {
+  [ContractType.CDI]: 'CDI',
+  [ContractType.CDD]: 'CDD',
+  [ContractType.STAGE]: 'Stage',
+  [ContractType.ALTERNANCE]: 'Alternance',
+  [ContractType.PRESTATION]: 'Prestation',
+  [ContractType.BENEVOLAT]: 'Bénévolat',
 };
 
 export default function AnnouncementInfoTags({

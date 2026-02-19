@@ -1,3 +1,12 @@
+export enum ContractType {
+  CDI = 'CDI',
+  CDD = 'CDD',
+  STAGE = 'Stage',
+  ALTERNANCE = 'Alternance',
+  PRESTATION = 'Prestation',
+  BENEVOLAT = 'Bénévolat',
+}
+
 export interface Author {
   id?: number;
   name: string;
@@ -13,7 +22,7 @@ export interface Announcement {
   tags: string[];
   location: string;
   isUrgent: boolean;
-  contractType: 'prestation' | 'full-time' | 'internship' | 'part-time';
+  contractType: ContractType;
   imageUrl: string | null;
   exactSalary?: number;
   minSalary?: number;

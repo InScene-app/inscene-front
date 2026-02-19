@@ -15,10 +15,10 @@ import MessageIcon from '@mui/icons-material/Message';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { ReactElement } from 'react';
 
-const HomeIcon = () => (
+const HomeIcon = ({ active = false }: { active?: boolean }) => (
   <Box
     component="img"
-    src="/logo/logo_black.svg"
+    src={active ? '/logo/logo_color.svg' : '/logo/logo_black.svg'}
     alt="Home"
     sx={{
       width: 50,
@@ -30,13 +30,14 @@ const HomeIcon = () => (
 interface MenuItem {
   label: string;
   icon: ReactElement;
+  activeIcon?: ReactElement;
   path: string;
 }
 
 const menuItems: MenuItem[] = [
   { label: 'Saved', icon: <BookmarkIcon />, path: '/saved' },
   { label: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
-  { label: 'Home', icon: <HomeIcon />, path: '/' },
+  { label: 'Home', icon: <HomeIcon />, activeIcon: <HomeIcon active />, path: '/' },
   { label: 'Messages', icon: <MessageIcon />, path: '/messages' },
   { label: 'Account', icon: <AccountCircleIcon />, path: '/account' },
 ];
@@ -69,22 +70,25 @@ export default function Navigation() {
           alignItems: 'center',
         }}
       >
-        {menuItems.map((item, index) => (
-          <IconButton
-            key={item.label}
-            onClick={() => navigate(item.path)}
-            sx={{
-              color: currentIndex === index ? 'primary.dark' : 'background.black',
-              transition: 'color 0.2s ease',
-              padding: item.label === 'Home' ? 0 : 1,
-              '& .MuiSvgIcon-root': {
-                fontSize: '24px',
-              },
-            }}
-          >
-            {item.icon}
-          </IconButton>
-        ))}
+        {menuItems.map((item, index) => {
+          const isActive = currentIndex === index;
+          return (
+            <IconButton
+              key={item.label}
+              onClick={() => navigate(item.path)}
+              sx={{
+                color: isActive ? 'primary.main' : 'background.black',
+                transition: 'color 0.2s ease',
+                padding: item.label === 'Home' ? 0 : 1,
+                '& .MuiSvgIcon-root': {
+                  fontSize: '24px',
+                },
+              }}
+            >
+              {isActive && item.activeIcon ? item.activeIcon : item.icon}
+            </IconButton>
+          );
+        })}
       </Box>
     );
   }
@@ -104,7 +108,9 @@ export default function Navigation() {
           gap: 2,
         }}
       >
-        {menuItems.map((item) => (
+        {menuItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
           <Box
             key={item.label}
             sx={{
@@ -114,7 +120,7 @@ export default function Navigation() {
             <IconButton
               onClick={() => navigate(item.path)}
               sx={{
-                color: location.pathname === item.path ? 'primary.dark' : 'background.black',
+                color: isActive ? 'primary.main' : 'background.black',
                 transition: 'all 0.2s ease',
                 '&:hover': {
                   color: 'primary.dark',
@@ -125,7 +131,7 @@ export default function Navigation() {
                 },
               }}
             >
-              {item.icon}
+              {isActive && item.activeIcon ? item.activeIcon : item.icon}
             </IconButton>
             <Box
               className="nav-label"
@@ -153,7 +159,8 @@ export default function Navigation() {
               {item.label}
             </Box>
           </Box>
-        ))}
+          );
+        })}
       </Toolbar>
     </AppBar>
   );

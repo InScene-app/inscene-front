@@ -33,3 +33,31 @@ export async function getFavoriteAnnouncements(): Promise<any[]> {
     const response = await api.get(`/user/${userId}/favorites`);
     return response.data || [];
 }
+
+// --- Favorite Users ---
+
+export async function getFavoriteUserIds(): Promise<number[]> {
+    const userId = getCurrentUserId();
+    if (!userId) return [];
+    const response = await api.get(`/user/${userId}/favorite-users`);
+    return (response.data || []).map((u: any) => u.id);
+}
+
+export async function addFavoriteUser(targetUserId: number): Promise<void> {
+    const userId = getCurrentUserId();
+    if (!userId) return;
+    await api.post(`/user/${userId}/favorite-users/${targetUserId}`);
+}
+
+export async function removeFavoriteUser(targetUserId: number): Promise<void> {
+    const userId = getCurrentUserId();
+    if (!userId) return;
+    await api.delete(`/user/${userId}/favorite-users/${targetUserId}`);
+}
+
+export async function getFavoriteUsers(): Promise<any[]> {
+    const userId = getCurrentUserId();
+    if (!userId) return [];
+    const response = await api.get(`/user/${userId}/favorite-users`);
+    return response.data || [];
+}

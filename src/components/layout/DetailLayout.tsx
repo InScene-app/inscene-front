@@ -5,16 +5,25 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShareIcon from '@mui/icons-material/Share';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import EditIcon from '@mui/icons-material/Edit';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 interface DetailLayoutProps {
   children: ReactNode;
   isSaved?: boolean;
   onToggleSave?: () => void;
   onShare?: () => void;
+  isOwner?: boolean;
+  isEditing?: boolean;
+  onToggleEdit?: () => void;
 }
 
-export default function DetailLayout({ children, isSaved = false, onToggleSave, onShare }: DetailLayoutProps) {
+export default function DetailLayout({ children, isSaved = false, onToggleSave, onShare, isOwner = false, isEditing = false, onToggleEdit }: DetailLayoutProps) {
   const navigate = useNavigate();
+
+  const handleSettings = () => {
+    navigate('/settings');
+  };
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -83,22 +92,56 @@ export default function DetailLayout({ children, isSaved = false, onToggleSave, 
             <ShareIcon sx={{ fontSize: '24px' }} />
           </IconButton>
 
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleSave?.();
-            }}
-            sx={{
-              color: isSaved ? 'primary.main' : 'text.secondary',
-              backgroundColor: 'transparent',
-              '&:hover': {
+          {isOwner && (
+            <IconButton
+              onClick={handleSettings}
+              sx={{
+                color: 'text.secondary',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  color: 'primary.main',
+                },
+              }}
+            >
+              <SettingsIcon sx={{ fontSize: '24px' }} />
+            </IconButton>
+          )}
+
+          {isOwner ? (
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleEdit?.();
+              }}
+              sx={{
+                color: isEditing ? 'primary.main' : 'text.secondary',
                 backgroundColor: 'transparent',
-                color: 'primary.main',
-              },
-            }}
-          >
-            {isSaved ? <BookmarkIcon sx={{ fontSize: '24px' }} /> : <BookmarkBorderIcon sx={{ fontSize: '24px' }} />}
-          </IconButton>
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  color: 'primary.main',
+                },
+              }}
+            >
+              <EditIcon sx={{ fontSize: '24px' }} />
+            </IconButton>
+          ) : (
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSave?.();
+              }}
+              sx={{
+                color: isSaved ? 'primary.main' : 'text.secondary',
+                backgroundColor: 'transparent',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  color: 'primary.main',
+                },
+              }}
+            >
+              {isSaved ? <BookmarkIcon sx={{ fontSize: '24px' }} /> : <BookmarkBorderIcon sx={{ fontSize: '24px' }} />}
+            </IconButton>
+          )}
         </Box>
       </Box>
 

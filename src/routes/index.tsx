@@ -13,6 +13,7 @@ import AnnouncementDetail from '../pages/AnnouncementDetail';
 import UserProfile from '../pages/UserProfile';
 import Onboarding from '../pages/Onboarding';
 import ProfileSetupPage from '../pages/ProfileSetupPage';
+import Settings from '../pages/Settings';
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
       {
         path: '/profile-setup',
         element: <ProfileSetupPage />,
+      },
+      {
+        path: '/settings',
+        element: <Settings />,
       },
       {
         path: '/',

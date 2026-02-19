@@ -76,68 +76,72 @@ export default function AnnouncementDetail() {
 
   return (
     <DetailLayout isSaved={checkSaved(announcementId)} onToggleSave={handleToggleSave}>
-      <Box sx={{ p: 2.5 }}>
-        {/* Auteur avec avatar */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1.5,
-            mb: 2,
-            cursor: announcement?.author?.id ? 'pointer' : 'default',
-            '&:hover': announcement?.author?.id ? {
-              opacity: 0.7,
-            } : {},
-          }}
-          onClick={handleAuthorClick}
-        >
-          <Avatar
-            src={announcement.author?.avatar || undefined}
-            alt={announcement.author?.name}
+      <Box>
+        {/* Partie haute avec padding : auteur, titre, tags, bouton */}
+        <Box sx={{ px: 2.5, pt: 2.5 }}>
+          {/* Auteur avec avatar */}
+          <Box
             sx={{
-              width: 45,
-              height: 45,
-              objectFit: 'cover',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
+              mb: 2,
+              cursor: announcement?.author?.id ? 'pointer' : 'default',
+              '&:hover': announcement?.author?.id ? {
+                opacity: 0.7,
+              } : {},
             }}
-          />
-          <Typography sx={{ fontSize: '17px', fontWeight: 500 }}>
-            {announcement.author?.name}
+            onClick={handleAuthorClick}
+          >
+            <Avatar
+              src={announcement.author?.avatar || undefined}
+              alt={announcement.author?.name}
+              sx={{
+                width: 45,
+                height: 45,
+                objectFit: 'cover',
+              }}
+            />
+            <Typography sx={{ fontSize: '17px', fontWeight: 500 }}>
+              {announcement.author?.name}
+            </Typography>
+          </Box>
+
+          {/* Titre */}
+          <Typography sx={{ fontSize: '24px', fontWeight: 700, mb: 2 }}>
+            {announcement.title}
           </Typography>
+
+          {/* Tous les tags sur une seule ligne avec wrap */}
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center', mb: 2 }}>
+            <AnnouncementTags isUrgent={announcement.isUrgent} tags={announcement.tags} variant="detail" />
+            <AnnouncementInfoTags
+              location={announcement.location}
+              contractType={announcement.contractType}
+              exactSalary={announcement.exactSalary}
+              minSalary={announcement.minSalary}
+              maxSalary={announcement.maxSalary}
+            />
+          </Box>
+
+          {/* Nombre de candidats + Date */}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ mb: 3 }}
+          >
+            <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
+              {announcement.applicantsCount !== undefined
+                ? `${announcement.applicantsCount} candidat${announcement.applicantsCount > 1 ? 's' : ''}`
+                : '0 candidat'}
+            </Typography>
+            <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
+              {displayDate}
+            </Typography>
+          </Stack>
+
         </Box>
-
-        {/* Titre */}
-        <Typography sx={{ fontSize: '24px', fontWeight: 700, mb: 2 }}>
-          {announcement.title}
-        </Typography>
-
-        {/* Tous les tags sur une seule ligne avec wrap */}
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center', mb: 2 }}>
-          <AnnouncementTags isUrgent={announcement.isUrgent} tags={announcement.tags} variant="detail" />
-          <AnnouncementInfoTags
-            location={announcement.location}
-            contractType={announcement.contractType}
-            exactSalary={announcement.exactSalary}
-            minSalary={announcement.minSalary}
-            maxSalary={announcement.maxSalary}
-          />
-        </Box>
-
-        {/* Nombre de candidats + Date */}
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ mb: 3 }}
-        >
-          <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
-            {announcement.applicantsCount !== undefined
-              ? `${announcement.applicantsCount} candidat${announcement.applicantsCount > 1 ? 's' : ''}`
-              : '0 candidat'}
-          </Typography>
-          <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
-            {displayDate}
-          </Typography>
-        </Stack>
 
         {/* Bouton Postuler */}
         <Box sx={{ mb: 3 }}>
@@ -146,14 +150,14 @@ export default function AnnouncementDetail() {
           </PrimaryButton>
         </Box>
 
-        {/* Bloc détails de l'annonce */}
+
+        {/* Contenu sans padding */}
         <AnnouncementDetailsBlock
           missionDetails={announcement.missionDetails}
           advantages={announcement.advantages}
           process={announcement.process}
         />
 
-        {/* Bloc profil recherché (avec compétences en texte) */}
         <Box sx={{ mt: 3 }}>
           <AnnouncementProfileBlock
             profileRequired={announcement.profileRequired}
