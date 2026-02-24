@@ -1,5 +1,18 @@
 import { createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/styles' {
+  interface SimplePaletteColorOptions {
+    extraLight?: string;
+  }
+
+  interface TypeBackground {
+    middle?: string;
+    dark?: string;
+    white?: string;
+    black?: string;
+  }
+}
+
 const theme = createTheme({
   palette: {
     mode: 'light',

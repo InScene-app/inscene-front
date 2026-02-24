@@ -54,8 +54,8 @@ export default function OnboardingCarousel({ onComplete }: OnboardingCarouselPro
         setTouchEnd(0);
     };
 
-    const leftIndex = (activeIndex - 1 + images.length) % images.length;
-    const rightIndex = (activeIndex + 1) % images.length;
+    // const leftIndex = (activeIndex - 1 + images.length) % images.length;
+    // const rightIndex = (activeIndex + 1) % images.length;
 
     // Positions calculées pour centrer le carrousel
     const centerImageWidth = 178;

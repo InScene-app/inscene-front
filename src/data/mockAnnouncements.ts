@@ -1,4 +1,5 @@
 import { Announcement } from '../types/announcement';
+import { ContractType } from '../types/announcement';
 
 export const mockAnnouncements: Announcement[] = [
   {
@@ -14,7 +15,7 @@ export const mockAnnouncements: Announcement[] = [
     tags: ['Montage', 'Audiovisuel'],
     location: 'Lyon',
     isUrgent: false,
-    contractType: 'prestation',
+    contractType: ContractType.PRESTATION,
     imageUrl: null,
     minSalary: 500,
     maxSalary: 800,
@@ -33,7 +34,7 @@ export const mockAnnouncements: Announcement[] = [
     tags: ['Audiovisuel', 'Bénévolat'],
     location: 'Lyon',
     isUrgent: true,
-    contractType: 'full-time',
+    contractType: ContractType.CDD,
     imageUrl: null,
     exactSalary: 2500,
     applicantsCount: 34,
@@ -51,7 +52,7 @@ export const mockAnnouncements: Announcement[] = [
     tags: ['Audiovisuel', 'Bénévolat'],
     location: '3ème',
     isUrgent: false,
-    contractType: 'internship',
+    contractType: ContractType.BENEVOLAT,
     imageUrl: null,
     applicantsCount: 5,
   },
@@ -68,7 +69,7 @@ export const mockAnnouncements: Announcement[] = [
     tags: ['Montage'],
     location: 'Marseille',
     isUrgent: true,
-    contractType: 'prestation',
+    contractType: ContractType.PRESTATION,
     imageUrl: null,
     minSalary: 1200,
     applicantsCount: 23,
