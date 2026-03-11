@@ -116,3 +116,11 @@ export const getFollowingIds = async (userId: number): Promise<number[]> => {
     const response = await api.get(`/user/${userId}/following`);
     return (response.data || []).map((u: any) => u.id);
 };
+
+export const addSocialNetwork = async (userId: number, data: { name: string; url: string }): Promise<void> => {
+    await api.post(`/social-network/user/${userId}`, data);
+};
+
+export const deleteSocialNetwork = async (id: number): Promise<void> => {
+    await api.delete(`/social-network/${id}`);
+};

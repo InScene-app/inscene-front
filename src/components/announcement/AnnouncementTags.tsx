@@ -21,7 +21,7 @@ export default function AnnouncementTags({ isUrgent = false, tags = [], variant 
             fontSize: '14px',
             fontWeight: 900,
             textTransform: 'uppercase',
-            backgroundColor: 'primary.main',
+            backgroundColor: 'background.urgent',
             color: 'white',
             '& .MuiChip-label': {
               px: 1,
@@ -41,7 +41,7 @@ export default function AnnouncementTags({ isUrgent = false, tags = [], variant 
           sx={{
             fontSize: '14px',
             fontWeight: 500,
-            backgroundColor: isDetail ? 'background.middle' : 'background.white',
+            backgroundColor: isDetail ? 'background.tag' : 'background.paper',
             color: isDetail ? 'text.secondary' : 'text.primary',
             border: 'none',
             '& .MuiChip-label': {
@@ -57,7 +57,7 @@ export default function AnnouncementTags({ isUrgent = false, tags = [], variant 
           sx={{
             fontSize: '14px',
             fontWeight: 500,
-            backgroundColor: isDetail ? 'background.middle' : 'background.white',
+            backgroundColor: isDetail ? 'background.tag' : 'background.paper',
             color: isDetail ? 'text.secondary' : 'text.primary',
             border: 'none',
             '& .MuiChip-label': {

@@ -19,8 +19,8 @@ export default function FileItem({ file }: FileItemProps) {
             rel="noopener noreferrer"
             sx={{
                 display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5, borderRadius: 2,
-                bgcolor: '#F2F6FC', textDecoration: 'none', color: 'inherit',
-                '&:hover': file.url ? { bgcolor: '#E3ECF7' } : {},
+                bgcolor: 'background.default', textDecoration: 'none', color: 'inherit',
+                '&:hover': file.url ? { bgcolor: 'background.hover' } : {},
             }}
         >
             <InsertDriveFileOutlinedIcon sx={{ color: 'primary.main', fontSize: 28 }} />

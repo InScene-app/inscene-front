@@ -52,17 +52,17 @@ const chipSx = (active: boolean) => ({
   fontSize: '14px',
   fontFamily: 'Nunito, sans-serif',
   fontWeight: active ? 600 : 400,
-  backgroundColor: active ? '#FF8C5F' : '#FFFFFF',
-  color: active ? '#FFFFFF' : '#000000',
+  backgroundColor: active ? 'primary.main' : 'background.paper',
+  color: active ? '#FFFFFF' : 'text.primary',
   transition: 'all 0.2s',
-  '&:hover': { backgroundColor: active ? '#E67E50' : '#F0F4FA' },
+  '&:hover': { backgroundColor: active ? 'primary.dark' : 'background.hover' },
 });
 
 const selectAllSx = (active: boolean) => ({
   ...chipSx(active),
-  backgroundColor: active ? '#FF8C5F' : '#C7DCF0',
-  color: active ? '#FFFFFF' : '#000000',
-  '&:hover': { backgroundColor: active ? '#E67E50' : '#B0CCE4' },
+  backgroundColor: active ? 'primary.main' : 'secondary.light',
+  color: active ? '#FFFFFF' : 'text.primary',
+  '&:hover': { backgroundColor: active ? 'primary.dark' : '#B0CCE4' },
 });
 
 export default function ProfessionalStep({ onUpdate, onNext, progress }: ProfessionalStepProps) {
@@ -166,7 +166,7 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
   return (
     <Box
       sx={{
-        backgroundColor: '#F2F6FC',
+        backgroundColor: 'background.default',
         minHeight: '100dvh',
         display: 'flex',
         flexDirection: 'column',
@@ -186,7 +186,7 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
           fontSize: '24px',
           fontWeight: 600,
           textAlign: 'center',
-          color: '#000000',
+          color: 'text.primary',
         }}
       >
         Profil professionnel
@@ -196,7 +196,7 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
       <Box>
         <Typography
           variant="inherit"
-          sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: jobError ? '#d32f2f' : '#000000', mb: '8px' }}
+          sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: jobError ? 'error.main' : 'text.primary', mb: '8px' }}
         >
           Métier *{jobError && ' — Sélectionne au moins un métier'}
         </Typography>
@@ -218,13 +218,13 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    backgroundColor: categoryJobsSelected ? '#225182' : '#FFFFFF',
+                    backgroundColor: categoryJobsSelected ? 'secondary.main' : 'background.paper',
                     borderRadius: '24px',
                     px: '16px',
                     py: '12px',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
-                    '&:hover': { backgroundColor: categoryJobsSelected ? '#1A3F66' : '#F0F4FA' },
+                    '&:hover': { backgroundColor: categoryJobsSelected ? 'secondary.dark' : 'background.hover' },
                   }}
                 >
                   <Typography
@@ -233,7 +233,7 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
                       fontFamily: 'Nunito, sans-serif',
                       fontSize: '14px',
                       fontWeight: 600,
-                      color: categoryJobsSelected ? '#FFFFFF' : '#000000',
+                      color: categoryJobsSelected ? '#FFFFFF' : 'text.primary',
                     }}
                   >
                     {category.name}
@@ -271,7 +271,7 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
       <Box>
         <Typography
           variant="inherit"
-          sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: '#000000', mb: '4px' }}
+          sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: 'text.primary', mb: '4px' }}
         >
           Localisation
         </Typography>
@@ -295,7 +295,7 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
           sx={{
             '& .MuiOutlinedInput-root': {
               borderRadius: '100px',
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'background.paper',
               '& fieldset': { border: 'none' },
             },
             '& .MuiInputBase-input::placeholder': {
@@ -307,7 +307,7 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
         {citySuggestions.length > 0 && !selectedCity && (
           <Box
             sx={{
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'background.paper',
               borderRadius: '16px',
               mt: '4px',
               overflow: 'hidden',
@@ -321,12 +321,12 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
                   px: '16px',
                   py: '10px',
                   cursor: 'pointer',
-                  '&:hover': { backgroundColor: '#F0F4FA' },
+                  '&:hover': { backgroundColor: 'background.hover' },
                 }}
               >
                 <Typography
                   variant="inherit"
-                  sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', color: '#000000' }}
+                  sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', color: 'text.primary' }}
                 >
                   {city.nom} {city.codesPostaux?.[0] && `(${city.codesPostaux[0]})`}
                 </Typography>
@@ -340,7 +340,7 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
       <Box>
         <Typography
           variant="inherit"
-          sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: '#000000', mb: '8px' }}
+          sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: 'text.primary', mb: '8px' }}
         >
           Niveau d'expérience
         </Typography>

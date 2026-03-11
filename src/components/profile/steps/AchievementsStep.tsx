@@ -34,7 +34,7 @@ interface AchievementsStepProps {
 const inputSx = {
   '& .MuiOutlinedInput-root': {
     borderRadius: '100px',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'background.paper',
     '& fieldset': { border: 'none' },
   },
   '& .MuiInputBase-input::placeholder': {
@@ -46,20 +46,20 @@ const inputSx = {
 const iconBoxSx = (active: boolean) => ({
   width: '48px',
   height: '40px',
-  backgroundColor: active ? '#225182' : '#C7DCF0',
+  backgroundColor: active ? 'secondary.main' : 'secondary.light',
   borderRadius: '100px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   cursor: 'pointer',
   transition: 'all 0.2s',
-  color: active ? '#FFFFFF' : '#000000',
+  color: active ? '#FFFFFF' : 'text.primary',
   flexShrink: 0,
 });
 
 const toggleBoxSx = (active: boolean) => ({
   height: '40px',
-  backgroundColor: active ? '#225182' : '#C7DCF0',
+  backgroundColor: active ? 'secondary.main' : 'secondary.light',
   borderRadius: '100px',
   display: 'flex',
   alignItems: 'center',
@@ -68,7 +68,7 @@ const toggleBoxSx = (active: boolean) => ({
   px: '16px',
   cursor: 'pointer',
   transition: 'all 0.2s',
-  color: active ? '#FFFFFF' : '#000000',
+  color: active ? '#FFFFFF' : 'text.primary',
 });
 
 const SOCIALS = [
@@ -114,7 +114,7 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
   return (
     <Box
       sx={{
-        backgroundColor: '#F2F6FC',
+        backgroundColor: 'background.default',
         minHeight: '100dvh',
         display: 'flex',
         flexDirection: 'column',
@@ -134,7 +134,7 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
             fontSize: '24px',
             fontWeight: 600,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           Réalisations
@@ -144,7 +144,7 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
         <Box>
           <Typography
             variant="inherit"
-            sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: '#000000', mb: '12px' }}
+            sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: 'text.primary', mb: '12px' }}
           >
             Réseaux sociaux
           </Typography>
@@ -190,7 +190,7 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
               />
               <PrimaryButton
                 onClick={() => {}}
-                sx={{ alignSelf: 'flex-start', backgroundColor: '#225182', '&:hover': { backgroundColor: '#1A3F66' } }}
+                sx={{ alignSelf: 'flex-start', backgroundColor: 'secondary.main', '&:hover': { backgroundColor: 'secondary.dark' } }}
               >
                 Ajouter
               </PrimaryButton>
@@ -202,15 +202,15 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
         <Box>
           <Typography
             variant="inherit"
-            sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: '#000000', mb: '8px' }}
+            sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: 'text.primary', mb: '8px' }}
           >
             Diplômes
           </Typography>
           <PrimaryButton
             onClick={() => {}}
             sx={{
-              backgroundColor: '#225182',
-              '&:hover': { backgroundColor: '#1A3F66' },
+              backgroundColor: 'secondary.main',
+              '&:hover': { backgroundColor: 'secondary.dark' },
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -225,7 +225,7 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
         <Box>
           <Typography
             variant="inherit"
-            sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: '#000000', mb: '8px' }}
+            sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: 'text.primary', mb: '8px' }}
           >
             Portfolio et CV
           </Typography>
@@ -265,8 +265,8 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
                       <PrimaryButton
                         onClick={() => {}}
                         sx={{
-                          backgroundColor: '#225182',
-                          '&:hover': { backgroundColor: '#1A3F66' },
+                          backgroundColor: 'secondary.main',
+                          '&:hover': { backgroundColor: 'secondary.dark' },
                           minWidth: 'auto',
                           py: '4px',
                           px: '14px',

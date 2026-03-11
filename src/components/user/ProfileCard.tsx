@@ -50,7 +50,7 @@ export default function ProfileCard({ user, isSaved = false, onToggleSave }: Pro
                 gap: 2,
                 p: 2,
                 borderRadius: '20px',
-                bgcolor: '#F2F6FC',
+                bgcolor: 'background.default',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
@@ -86,8 +86,8 @@ export default function ProfileCard({ user, isSaved = false, onToggleSave }: Pro
                                 sx={{
                                     fontSize: '11px',
                                     height: 22,
-                                    backgroundColor: '#E3ECF7',
-                                    color: '#333',
+                                    backgroundColor: 'background.hover',
+                                    color: 'text.primary',
                                 }}
                             />
                         ))}

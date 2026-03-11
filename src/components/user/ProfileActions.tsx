@@ -16,7 +16,7 @@ export default function ProfileActions({ isFollowing, followLoading, onToggleFol
                     sx={{
                         textTransform: 'none', borderRadius: '50px', borderColor: 'primary.main',
                         color: 'primary.main', fontWeight: 500, padding: '8px 13px',
-                        '&:hover': { borderColor: '#d32f2f', color: '#d32f2f', backgroundColor: '#fce4ec' },
+                        '&:hover': { borderColor: 'error.main', color: 'error.main', backgroundColor: '#fce4ec' },
                     }}>
                     {followLoading ? <CircularProgress size={20} /> : 'Suivi'}
                 </Button>

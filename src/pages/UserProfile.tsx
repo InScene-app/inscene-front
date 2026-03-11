@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, CircularProgress, Typography, Stack, Button, Divider, TextField } from '@mui/material';
+import { Box, CircularProgress, Typography, Stack, Button, Divider, TextField, useMediaQuery } from '@mui/material';
 import DetailLayout from '../components/layout/DetailLayout';
 import PrimaryButton from '../components/common/PrimaryButton';
 import ProfileHeader from '../components/user/ProfileHeader';
@@ -10,7 +10,7 @@ import ProfileActivities from '../components/user/ProfileActivities';
 import ProfileMedia from '../components/user/ProfileMedia';
 import ProfileDiplomas from '../components/user/ProfileDiplomas';
 import JobSelectorDialog from '../components/user/JobSelectorDialog';
-import { getUserById, updateIndividual, uploadUserMedia, getCategories, Category, followUser, unfollowUser, getFollowingIds } from '../api/userService';
+import { getUserById, updateIndividual, uploadUserMedia, getCategories, Category, followUser, unfollowUser, getFollowingIds, addSocialNetwork, deleteSocialNetwork } from '../api/userService';
 import { User, SocialNetwork } from '../types/user';
 import { parseJwt } from '../utils/jwt';
 import { useFavorites } from '../hooks/useFavorites';
@@ -21,6 +21,7 @@ interface UserProfileProps {
 
 export default function UserProfile({ userId: propUserId }: UserProfileProps = {}) {
     const { id } = useParams<{ id: string }>();
+    const isDesktop = useMediaQuery('(min-width: 768px)');
 
     const resolvedId = propUserId ?? (id ? parseInt(id) : null);
     const tokenId = (() => {
@@ -111,12 +112,27 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
         if (!finalId) return;
         setSaving(true);
         try {
+            // Update individual fields (without socialNetworks - handled separately)
             await updateIndividual(finalId, {
                 firstName: editFirstName, lastName: editLastName,
                 description: editDescription,
                 location: editLocation ? [editLocation] : [],
-                jobCodes: editJobCodes, socialNetworks: editSocials,
+                jobCodes: editJobCodes,
             });
+
+            // Sync social networks via dedicated endpoints
+            const oldSocials = user?.socialNetworks || [];
+            const socialsToDelete = oldSocials.filter(
+                old => !editSocials.some(e => e.name === old.name && e.url === old.url)
+            );
+            const socialsToAdd = editSocials.filter(
+                e => !oldSocials.some(old => old.name === e.name && old.url === e.url)
+            );
+            await Promise.all([
+                ...socialsToDelete.map(s => deleteSocialNetwork(s.id)),
+                ...socialsToAdd.map(s => addSocialNetwork(finalId, s)),
+            ]);
+
             await fetchUser();
             setIsEditing(false);
         } catch { /* ignore */ } finally { setSaving(false); }
@@ -202,38 +218,82 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
             onToggleSave={finalId ? () => toggleSaveUser(finalId) : undefined}
         >
             <Box>
-                <ProfileHeader
-                    displayName={displayName} username={username}
-                    avatarUrl={user.avatarUrl} locationText={locationText}
-                    isEditing={isEditing}
-                    editFirstName={editFirstName} editLastName={editLastName} editLocation={editLocation}
-                    onEditFirstName={setEditFirstName} onEditLastName={setEditLastName} onEditLocation={setEditLocation}
-                    onAvatarUpload={makeUploadHandler('Avatar')}
-                />
+                {/* Top section: desktop = 2 columns, mobile = vertical */}
+                {isDesktop ? (
+                    <Box sx={{ display: 'flex', gap: 0, alignItems: 'flex-start', mb: 2 }}>
+                        {/* Left 60%: header + actions + socials */}
+                        <Box sx={{ flex: '0 0 60%', pr: 3 }}>
+                            <ProfileHeader
+                                displayName={displayName} username={username}
+                                avatarUrl={user.avatarUrl} locationText={locationText}
+                                isEditing={isEditing}
+                                editFirstName={editFirstName} editLastName={editLastName} editLocation={editLocation}
+                                onEditFirstName={setEditFirstName} onEditLastName={setEditLastName} onEditLocation={setEditLocation}
+                                onAvatarUpload={makeUploadHandler('Avatar')}
+                                isDesktop
+                            />
+                            {!isOwner && (
+                                <ProfileActions
+                                    isFollowing={isFollowing} followLoading={followLoading}
+                                    onToggleFollow={handleToggleFollow} websiteUrl={user.websiteUrl}
+                                />
+                            )}
+                            <ProfileSocials
+                                isEditing={isEditing}
+                                socialNetworks={user.socialNetworks}
+                                editSocials={editSocials}
+                                onAddSocial={(name, url) => setEditSocials(prev => [...prev, { name, url }])}
+                                onRemoveSocial={(i) => setEditSocials(prev => prev.filter((_, idx) => idx !== i))}
+                            />
+                        </Box>
 
-                {!isOwner && (
-                    <ProfileActions
-                        isFollowing={isFollowing} followLoading={followLoading}
-                        onToggleFollow={handleToggleFollow} websiteUrl={user.websiteUrl}
-                    />
+                        {/* Vertical divider */}
+                        <Divider orientation="vertical" flexItem />
+
+                        {/* Right 40%: activities */}
+                        <Box sx={{ flex: '0 0 40%', pl: 3 }}>
+                            <ProfileActivities
+                                activitiesTags={activitiesTags} isEditing={isEditing}
+                                editJobCodes={editJobCodes} getJobName={getJobName}
+                                onRemoveJob={(code) => setEditJobCodes(prev => prev.filter(c => c !== code))}
+                                onOpenJobSelector={openJobSelector}
+                            />
+                        </Box>
+                    </Box>
+                ) : (
+                    <>
+                        <ProfileHeader
+                            displayName={displayName} username={username}
+                            avatarUrl={user.avatarUrl} locationText={locationText}
+                            isEditing={isEditing}
+                            editFirstName={editFirstName} editLastName={editLastName} editLocation={editLocation}
+                            onEditFirstName={setEditFirstName} onEditLastName={setEditLastName} onEditLocation={setEditLocation}
+                            onAvatarUpload={makeUploadHandler('Avatar')}
+                        />
+                        {!isOwner && (
+                            <ProfileActions
+                                isFollowing={isFollowing} followLoading={followLoading}
+                                onToggleFollow={handleToggleFollow} websiteUrl={user.websiteUrl}
+                            />
+                        )}
+                        <ProfileSocials
+                            isEditing={isEditing}
+                            socialNetworks={user.socialNetworks}
+                            editSocials={editSocials}
+                            onAddSocial={(name, url) => setEditSocials(prev => [...prev, { name, url }])}
+                            onRemoveSocial={(i) => setEditSocials(prev => prev.filter((_, idx) => idx !== i))}
+                        />
+                        <Divider />
+                        <ProfileActivities
+                            activitiesTags={activitiesTags} isEditing={isEditing}
+                            editJobCodes={editJobCodes} getJobName={getJobName}
+                            onRemoveJob={(code) => setEditJobCodes(prev => prev.filter(c => c !== code))}
+                            onOpenJobSelector={openJobSelector}
+                        />
+                    </>
                 )}
 
-                <ProfileSocials
-                    isEditing={isEditing}
-                    socialNetworks={user.socialNetworks}
-                    editSocials={editSocials}
-                    onAddSocial={(name, url) => setEditSocials(prev => [...prev, { name, url }])}
-                    onRemoveSocial={(i) => setEditSocials(prev => prev.filter((_, idx) => idx !== i))}
-                />
-
-                <Divider />
-
-                <ProfileActivities
-                    activitiesTags={activitiesTags} isEditing={isEditing}
-                    editJobCodes={editJobCodes} getJobName={getJobName}
-                    onRemoveJob={(code) => setEditJobCodes(prev => prev.filter(c => c !== code))}
-                    onOpenJobSelector={openJobSelector}
-                />
+                <Divider sx={{ mb: 2 }} />
 
                 <ProfileMedia
                     pictures={pictures} videos={videos} otherFiles={otherFiles}
@@ -242,6 +302,8 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
                     onPhotoUpload={makeUploadHandler('Picture')}
                     onVideoUpload={makeUploadHandler('Video')}
                     onFileUpload={makeUploadHandler('Portfolio')}
+                    maxPerRow={isDesktop ? 3 : 2}
+                    maxRowHeight={isDesktop ? 350 : 250}
                 />
 
                 {/* Présentation */}
@@ -255,7 +317,7 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
                                 onChange={(e) => setEditDescription(e.target.value)} placeholder="Décrivez-vous..."
                                 sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }} />
                         ) : (
-                            <Typography sx={{ fontSize: '15px', fontWeight: 400, color: '#000000', textAlign: 'left' }}>
+                            <Typography sx={{ fontSize: '15px', fontWeight: 400, color: 'text.primary', textAlign: 'left' }}>
                                 {user.description}
                             </Typography>
                         )}

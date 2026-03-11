@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PrimaryButton from '../../common/PrimaryButton';
 
@@ -8,6 +8,8 @@ interface WelcomeStepProps {
 
 export default function WelcomeStep({ onStart }: WelcomeStepProps) {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
   return (
     <Box
       sx={{
@@ -28,7 +30,7 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
           flexDirection: 'column',
           gap: 'clamp(4px, 1vh, 10px)',
           p: '20px',
-          backgroundColor: '#FAFCFF',
+          backgroundColor: 'background.paper',
           borderRadius: '35px',
           flex: '0 1 auto',
         }}
@@ -40,7 +42,7 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
             fontSize: '20px',
             fontWeight: 600,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           Créez votre profil
@@ -53,7 +55,7 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
             fontSize: '14px',
             fontWeight: 400,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           Plus votre profil sera complet, plus vous trouverez des offres pertinentes.
@@ -66,7 +68,7 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
             fontSize: '14px',
             fontWeight: 400,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           Cette étape prend moins de 5 minutes et vous fera{' '}
@@ -96,7 +98,9 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
       {/* Conteneur 2 - Bloc entreprise/association */}
       <Box
         sx={{
-          border: '1px solid #225182',
+          backgroundColor: 'background.paper',
+          border: '1px solid',
+          borderColor: isDark ? 'background.border' : 'secondary.main',
           borderRadius: '35px',
           p: '20px',
           display: 'flex',
@@ -112,14 +116,14 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
             fontSize: '20px',
             fontWeight: 600,
             textAlign: 'center',
-            color: '#225182',
+            color: isDark ? 'text.primary' : 'secondary.main',
             pb: '20px',
           }}
         >
           Vous êtes une entreprise, association ou recruteur ?
         </Typography>
 
-        <PrimaryButton fullWidth sx={{ backgroundColor: '#225182' }}>
+        <PrimaryButton fullWidth sx={{ backgroundColor: isDark ? 'background.default' : 'secondary.main', color: '#ffffff' }}>
           Créer un profil pro
         </PrimaryButton>
 
@@ -127,10 +131,11 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
           fullWidth
           sx={{
             backgroundColor: 'transparent',
-            color: '#225182',
-            border: '1px solid #225182',
+            color: isDark ? 'text.primary' : 'secondary.main',
+            border: '1px solid',
+            borderColor: isDark ? 'background.border' : 'secondary.main',
             '&:hover': {
-              backgroundColor: 'rgba(34, 81, 130, 0.04)',
+              backgroundColor: 'background.hover',
             },
           }}
         >
@@ -145,7 +150,7 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
           flexDirection: 'column',
           gap: 'clamp(4px, 1vh, 10px)',
           p: '20px',
-          backgroundColor: '#FAFCFF',
+          backgroundColor: 'background.paper',
           borderRadius: '35px',
           flex: '0 1 auto',
         }}
@@ -157,7 +162,7 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
             fontSize: '20px',
             fontWeight: 600,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           Pas de profil ?
@@ -170,7 +175,7 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
             fontSize: '14px',
             fontWeight: 400,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           Vous pouvez toujours parcourir l'application et créer votre profil utilisateur plus tard
@@ -181,8 +186,9 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
           onClick={() => navigate('/')}
           sx={{
             backgroundColor: 'transparent',
-            color: '#E67E50',
-            border: '1px solid #E67E50',
+            color: 'primary.dark',
+            border: '1px solid',
+            borderColor: 'primary.dark',
             '&:hover': {
               backgroundColor: 'rgba(230, 126, 80, 0.04)',
             },

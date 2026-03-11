@@ -14,62 +14,61 @@ interface Row {
     height: number;
 }
 
-function buildRows(images: ImageWithSize[], containerWidth: number, gap: number, maxRowHeight: number): Row[] {
+function buildRows(images: ImageWithSize[], containerWidth: number, gap: number, maxRowHeight: number, maxPerRow: number = 2): Row[] {
     const rows: Row[] = [];
     let i = 0;
-    let lastRowWasSingle = false;
+    let lastRowCount = 2;
 
     while (i < images.length) {
         const img = images[i];
-        const nextImg = i + 1 < images.length ? images[i + 1] : null;
+        const img2 = i + 1 < images.length ? images[i + 1] : null;
+        const img3 = i + 2 < images.length ? images[i + 2] : null;
 
-        // Height if this image was alone on the row
         const soloHeight = containerWidth / img.ratio;
-
-        if (!nextImg) {
-            // Last image, goes alone
-            rows.push({ images: [img], height: Math.min(soloHeight, maxRowHeight) });
-            i++;
-            continue;
-        }
-
-        // Height if paired with next image
-        const pairRatioSum = img.ratio + nextImg.ratio;
-        const pairHeight = (containerWidth - gap) / pairRatioSum;
-
-        // Decision: solo or pair?
-        // - Portrait images (ratio < 0.9) prefer to be paired
-        // - Very wide images (ratio > 1.8) prefer to be solo
-        // - After a single row, prefer a pair (and vice versa) for variety
         const isWide = img.ratio > 1.8;
         const isPortrait = img.ratio < 0.9;
-        const pairFitsWell = pairHeight >= 140 && pairHeight <= maxRowHeight;
 
-        let useSolo = false;
-
-        if (isWide && !lastRowWasSingle) {
-            // Wide image looks good solo, but not 2 singles in a row
-            useSolo = true;
-        } else if (isPortrait) {
-            // Portraits should always be paired
-            useSolo = false;
-        } else if (lastRowWasSingle) {
-            // Force pair after a single to create variety
-            useSolo = false;
-        } else if (!pairFitsWell && soloHeight <= maxRowHeight) {
-            // Pair would be too squished or too tall, go solo
-            useSolo = true;
+        // Try trio (maxPerRow >= 3, 3+ images available, not a very wide image)
+        if (maxPerRow >= 3 && img2 && img3 && !isWide) {
+            const trioRatioSum = img.ratio + img2.ratio + img3.ratio;
+            const trioHeight = (containerWidth - 2 * gap) / trioRatioSum;
+            if (trioHeight >= 100 && trioHeight <= maxRowHeight) {
+                rows.push({ images: [img, img2, img3], height: trioHeight });
+                lastRowCount = 3;
+                i += 3;
+                continue;
+            }
         }
 
-        if (useSolo) {
-            rows.push({ images: [img], height: Math.min(soloHeight, maxRowHeight) });
-            lastRowWasSingle = true;
-            i++;
-        } else {
-            rows.push({ images: [img, nextImg], height: Math.min(pairHeight, maxRowHeight) });
-            lastRowWasSingle = false;
-            i += 2;
+        // Try pair
+        if (img2) {
+            const pairRatioSum = img.ratio + img2.ratio;
+            const pairHeight = (containerWidth - gap) / pairRatioSum;
+            const pairFitsWell = pairHeight >= 140 && pairHeight <= maxRowHeight;
+
+            let useSolo = false;
+            if (isWide && lastRowCount !== 1) {
+                useSolo = true;
+            } else if (isPortrait) {
+                useSolo = false;
+            } else if (lastRowCount === 1) {
+                useSolo = false; // force pair after solo for variety
+            } else if (!pairFitsWell && soloHeight <= maxRowHeight) {
+                useSolo = true;
+            }
+
+            if (!useSolo) {
+                rows.push({ images: [img, img2], height: Math.min(pairHeight, maxRowHeight) });
+                lastRowCount = 2;
+                i += 2;
+                continue;
+            }
         }
+
+        // Solo
+        rows.push({ images: [img], height: Math.min(soloHeight, maxRowHeight) });
+        lastRowCount = 1;
+        i++;
     }
 
     return rows;
@@ -79,9 +78,10 @@ interface JustifiedPhotoGridProps {
     pictures: UserFile[];
     gap?: number;
     maxRowHeight?: number;
+    maxPerRow?: number;
 }
 
-export default function JustifiedPhotoGrid({ pictures, gap = 4, maxRowHeight = 250 }: JustifiedPhotoGridProps) {
+export default function JustifiedPhotoGrid({ pictures, gap = 4, maxRowHeight = 250, maxPerRow = 2 }: JustifiedPhotoGridProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [imagesWithSize, setImagesWithSize] = useState<ImageWithSize[]>([]);
     const [containerWidth, setContainerWidth] = useState(0);

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import PrimaryButton from '../common/PrimaryButton';
 
 interface OnboardingIntroProps {
@@ -6,6 +6,7 @@ interface OnboardingIntroProps {
 }
 
 export default function OnboardingIntro({ onNext }: OnboardingIntroProps) {
+    const theme = useTheme();
     return (
         <Box
             sx={{
@@ -20,7 +21,7 @@ export default function OnboardingIntro({ onNext }: OnboardingIntroProps) {
                     flex: 1,
                     position: 'relative',
                     overflow: 'hidden',
-                    backgroundColor: '#E4E7E8',
+                    backgroundColor: 'background.subtle',
 
                 }}
             >
@@ -47,7 +48,7 @@ export default function OnboardingIntro({ onNext }: OnboardingIntroProps) {
                     justifyContent: 'space-between',
                     px: 3,
                     pb: 3,
-                    backgroundColor: '#2251821A',
+                    backgroundColor: theme.palette.mode === 'dark' ? 'background.paper' : 'background.default',
                 }}
             >
                 {/* Container des textes centré verticalement */}
@@ -67,7 +68,7 @@ export default function OnboardingIntro({ onNext }: OnboardingIntroProps) {
                             fontSize: '24px',
                             fontWeight: 600,
                             textAlign: 'center',
-                            color: '#000000',
+                            color: 'text.primary',
                         }}
                     >
                         InScène vous aide dans votre{' '}
@@ -83,7 +84,7 @@ export default function OnboardingIntro({ onNext }: OnboardingIntroProps) {
                             fontSize: '17px',
                             fontWeight: 400,
                             textAlign: 'center',
-                            color: '#000000',
+                            color: 'text.primary',
                         }}
                     >
                         L'application vous{' '}

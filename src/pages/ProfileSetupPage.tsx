@@ -6,7 +6,7 @@ export default function ProfileSetupPage() {
     <Box
       sx={{
         minHeight: '100vh',
-        backgroundColor: '#F2F6FC',
+        backgroundColor: 'background.default',
       }}
     >
       <ProfileSetup />

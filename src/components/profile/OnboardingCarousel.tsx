@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { motion, AnimatePresence } from 'framer-motion';
 import PrimaryButton from '../common/PrimaryButton';
 
@@ -14,6 +16,7 @@ interface OnboardingCarouselProps {
 }
 
 export default function OnboardingCarousel({ onComplete }: OnboardingCarouselProps) {
+    const theme = useTheme();
     const [activeIndex, setActiveIndex] = useState(0);
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
@@ -75,7 +78,7 @@ export default function OnboardingCarousel({ onComplete }: OnboardingCarouselPro
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                backgroundColor: '#2251821A',
+                backgroundColor: theme.palette.mode === 'dark' ? 'background.paper' : 'background.default',
                 pb: 3,
             }}
         >
@@ -96,7 +99,7 @@ export default function OnboardingCarousel({ onComplete }: OnboardingCarouselPro
                         fontSize: '38px',
                         fontWeight: 600,
                         lineHeight: '57px',
-                        color: '#000000',
+                        color: 'text.primary',
                         textAlign: 'center',
                     }}
                 >
@@ -113,7 +116,7 @@ export default function OnboardingCarousel({ onComplete }: OnboardingCarouselPro
                         fontSize: '17px',
                         fontWeight: 400,
                         lineHeight: 'normal',
-                        color: '#000000',
+                        color: 'text.primary',
                         textAlign: 'center',
                     }}
                 >
@@ -221,10 +224,9 @@ export default function OnboardingCarousel({ onComplete }: OnboardingCarouselPro
                                 width: '10px',
                                 height: '10px',
                                 borderRadius: '50%',
-                                backgroundColor:
-                                    index === activeIndex
-                                        ? '#225182'
-                                        : 'rgba(34, 81, 130, 0.10)',
+                                backgroundColor: index === activeIndex
+                                    ? 'secondary.main'
+                                    : (theme: Theme) => alpha(theme.palette.text.primary, 0.2),
                                 cursor: 'pointer',
                                 transition: 'background-color 0.3s ease-in-out',
                             }}

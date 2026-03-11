@@ -22,17 +22,20 @@ const socialIconMap: Record<SocialNetwork['name'], { icon: SvgIconComponent; col
 
 export default function SocialIcon({ socialNetwork }: SocialIconProps) {
     const { icon: Icon } = socialIconMap[socialNetwork.name] || { icon: TwitterIcon, color: '#000000' };
+    const url = socialNetwork.url.startsWith('http://') || socialNetwork.url.startsWith('https://')
+        ? socialNetwork.url
+        : `https://${socialNetwork.url}`;
 
     return (
         <IconButton
             component="a"
-            href={socialNetwork.url}
+            href={url}
             target="_blank"
             rel="noopener noreferrer"
             sx={{
-                color: '#000000',
+                color: 'text.primary',
                 '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    backgroundColor: 'background.hover',
                 },
             }}
         >

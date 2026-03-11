@@ -1,4 +1,4 @@
-import { Box, Typography, Chip } from '@mui/material';
+import { Box, Typography, Chip, useTheme } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 interface ProfileActivitiesProps {
@@ -13,6 +13,8 @@ interface ProfileActivitiesProps {
 export default function ProfileActivities({
     activitiesTags, isEditing, editJobCodes, getJobName, onRemoveJob, onOpenJobSelector,
 }: ProfileActivitiesProps) {
+    const theme = useTheme();
+    const isDark = theme.palette.mode === 'dark';
     if (activitiesTags.length === 0 && !isEditing) return null;
 
     return (
@@ -26,13 +28,15 @@ export default function ProfileActivities({
                         <Chip key={code} label={getJobName(code)} size="small"
                             onDelete={() => onRemoveJob(code)}
                             sx={{
-                                fontSize: '15px', fontWeight: 500, backgroundColor: '#FF8C5F', color: '#FFFFFF',
-                                '& .MuiChip-deleteIcon': { color: '#FFFFFF' },
+                                fontSize: '15px', fontWeight: 500,
+                                backgroundColor: isDark ? 'background.hover' : 'primary.main',
+                                color: isDark ? 'text.primary' : '#FFFFFF',
+                                '& .MuiChip-deleteIcon': { color: isDark ? 'text.primary' : '#FFFFFF' },
                             }} />
                     ))}
                     <Chip icon={<AddIcon />} label="Ajouter" size="small" onClick={onOpenJobSelector}
                         sx={{
-                            fontSize: '15px', fontWeight: 500, backgroundColor: '#F2F6FC', color: '#000000',
+                            fontSize: '15px', fontWeight: 500, backgroundColor: 'background.default', color: 'text.primary',
                             cursor: 'pointer', border: '1px dashed #999',
                         }} />
                 </Box>
@@ -40,7 +44,7 @@ export default function ProfileActivities({
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
                     {activitiesTags.map((activity, index) => (
                         <Chip key={index} label={activity} size="small"
-                            sx={{ fontSize: '15px', fontWeight: 500, backgroundColor: '#F2F6FC', color: '#000000', border: 'none' }} />
+                            sx={{ fontSize: '15px', fontWeight: 500, backgroundColor: 'background.default', color: 'text.primary', border: 'none' }} />
                     ))}
                 </Box>
             )}

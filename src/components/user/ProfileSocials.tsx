@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Chip, Stack, Select, MenuItem, TextField, IconButton, SelectChangeEvent } from '@mui/material';
+import { Box, Chip, Stack, Select, MenuItem, TextField, IconButton, SelectChangeEvent, useTheme } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -25,6 +25,8 @@ interface ProfileSocialsProps {
 }
 
 export default function ProfileSocials({ isEditing, socialNetworks, editSocials, onAddSocial, onRemoveSocial }: ProfileSocialsProps) {
+    const theme = useTheme();
+    const isDark = theme.palette.mode === 'dark';
     const [newSocialName, setNewSocialName] = useState<SocialNetwork['name']>('INSTAGRAM');
     const [newSocialUrl, setNewSocialUrl] = useState('');
 
@@ -73,8 +75,8 @@ export default function ProfileSocials({ isEditing, socialNetworks, editSocials,
                     />
                     <IconButton onClick={handleAdd} disabled={!newSocialUrl.trim()}
                         sx={{
-                            bgcolor: 'primary.main', color: '#fff', width: 36, height: 36,
-                            '&:hover': { bgcolor: 'primary.dark' }, '&.Mui-disabled': { bgcolor: '#E0E0E0', color: '#999' },
+                            bgcolor: isDark ? 'background.border' : 'primary.main', color: '#fff', width: 36, height: 36,
+                            '&:hover': { bgcolor: isDark ? 'background.hover' : 'primary.dark' }, '&.Mui-disabled': { bgcolor: isDark ? 'background.paper' : '#E0E0E0', color: '#999' },
                         }}>
                         <AddIcon sx={{ fontSize: 20 }} />
                     </IconButton>

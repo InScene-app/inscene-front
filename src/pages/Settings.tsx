@@ -1,18 +1,23 @@
 import { useState } from 'react';
+import { alpha } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import {
-    Box, Typography, TextField, Stack, Divider, IconButton, Alert,
+    Box, Typography, TextField, Stack, Divider, IconButton, Alert, Switch,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import PrimaryButton from '../components/common/PrimaryButton';
 import api from '../api/client';
 import { logout } from '../api/client';
+import { useThemeMode } from '../contexts/ThemeContext';
 
 export default function Settings() {
     const navigate = useNavigate();
+    const { mode, toggleTheme } = useThemeMode();
 
     // Password change
     const [showPasswordForm, setShowPasswordForm] = useState(false);
@@ -64,11 +69,11 @@ export default function Settings() {
     };
 
     return (
-        <Box sx={{ minHeight: '100vh', bgcolor: '#F2F6FC' }}>
+        <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
             {/* Header */}
             <Box
                 sx={{
-                    bgcolor: 'background.white',
+                    bgcolor: 'background.paper',
                     px: 2,
                     py: 1.5,
                     display: 'flex',
@@ -91,7 +96,7 @@ export default function Settings() {
                 {passwordError && <Alert severity="error" onClose={() => setPasswordError('')}>{passwordError}</Alert>}
 
                 {/* Section Sécurité */}
-                <Box sx={{ bgcolor: 'background.white', borderRadius: 3, overflow: 'hidden' }}>
+                <Box sx={{ bgcolor: 'background.paper', borderRadius: 3, overflow: 'hidden' }}>
                     <Typography sx={{ px: 2, pt: 2, pb: 1, fontSize: '14px', fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase' }}>
                         Sécurité
                     </Typography>
@@ -106,7 +111,7 @@ export default function Settings() {
                             px: 2,
                             py: 1.5,
                             cursor: 'pointer',
-                            '&:hover': { bgcolor: '#F8FAFC' },
+                            '&:hover': { bgcolor: 'background.hover' },
                         }}
                     >
                         <LockOutlinedIcon sx={{ color: 'text.secondary' }} />
@@ -164,10 +169,35 @@ export default function Settings() {
                     )}
                 </Box>
 
+                {/* Section Apparence */}
+                <Box sx={{ bgcolor: 'background.paper', borderRadius: 3, overflow: 'hidden' }}>
+                    <Typography sx={{ px: 2, pt: 2, pb: 1, fontSize: '14px', fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase' }}>
+                        Apparence
+                    </Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            px: 2,
+                            py: 1.5,
+                        }}
+                    >
+                        <DarkModeOutlinedIcon sx={{ color: 'text.secondary' }} />
+                        <Typography sx={{ flex: 1, fontSize: '16px' }}>
+                            Mode sombre
+                        </Typography>
+                        <Switch
+                            checked={mode === 'dark'}
+                            onChange={toggleTheme}
+                        />
+                    </Box>
+                </Box>
+
                 <Divider />
 
                 {/* Déconnexion */}
-                <Box sx={{ bgcolor: 'background.white', borderRadius: 3, overflow: 'hidden' }}>
+                <Box sx={{ bgcolor: 'background.paper', borderRadius: 3, overflow: 'hidden' }}>
                     <Box
                         onClick={handleLogout}
                         sx={{
@@ -177,11 +207,11 @@ export default function Settings() {
                             px: 2,
                             py: 1.5,
                             cursor: 'pointer',
-                            '&:hover': { bgcolor: '#FFF5F5' },
+                            '&:hover': { bgcolor: (theme: Theme) => alpha(theme.palette.error.main, 0.08) },
                         }}
                     >
-                        <LogoutIcon sx={{ color: '#D32F2F' }} />
-                        <Typography sx={{ fontSize: '16px', color: '#D32F2F', fontWeight: 500 }}>
+                        <LogoutIcon sx={{ color: 'error.main' }} />
+                        <Typography sx={{ fontSize: '16px', color: 'error.main', fontWeight: 500 }}>
                             Se déconnecter
                         </Typography>
                     </Box>

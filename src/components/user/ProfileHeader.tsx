@@ -1,7 +1,10 @@
-import { useRef } from 'react';
-import { Box, Avatar, Typography, Stack, TextField } from '@mui/material';
+import { useRef, useState, useEffect } from 'react';
+import { Box, Avatar, Typography, Stack, TextField, InputAdornment } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import SearchIcon from '@mui/icons-material/Search';
+
+interface City { nom: string; code: string; codesPostaux?: string[]; }
 
 interface ProfileHeaderProps {
     displayName: string;
@@ -16,42 +19,151 @@ interface ProfileHeaderProps {
     onEditLastName: (v: string) => void;
     onEditLocation: (v: string) => void;
     onAvatarUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    isDesktop?: boolean;
 }
 
 export default function ProfileHeader({
     displayName, username, avatarUrl, locationText,
     isEditing, editFirstName, editLastName, editLocation,
     onEditFirstName, onEditLastName, onEditLocation, onAvatarUpload,
+    isDesktop,
 }: ProfileHeaderProps) {
     const avatarInputRef = useRef<HTMLInputElement>(null);
+    const cityDebounce = useRef<ReturnType<typeof setTimeout>>(undefined);
+    const [citySuggestions, setCitySuggestions] = useState<City[]>([]);
+    const [citySelected, setCitySelected] = useState(false);
+
+    useEffect(() => {
+        if (!editLocation || editLocation.length < 2 || citySelected) {
+            setCitySuggestions([]);
+            return;
+        }
+        clearTimeout(cityDebounce.current);
+        cityDebounce.current = setTimeout(() => {
+            fetch(`https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(editLocation)}&fields=nom,code,codesPostaux&limit=5`)
+                .then(r => r.json())
+                .then((cities: City[]) => setCitySuggestions(cities))
+                .catch(() => setCitySuggestions([]));
+        }, 300);
+    }, [editLocation, citySelected]);
+
+    const avatarBox = (size: number) => (
+        <Box sx={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
+            <Avatar
+                src={avatarUrl || undefined}
+                alt={displayName}
+                sx={{ width: size, height: size, objectFit: 'cover' }}
+            />
+            {isEditing && (
+                <>
+                    <input ref={avatarInputRef} type="file" accept="image/*" hidden onChange={onAvatarUpload} />
+                    <Box
+                        onClick={() => avatarInputRef.current?.click()}
+                        sx={{
+                            position: 'absolute', inset: 0, borderRadius: '50%',
+                            bgcolor: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer', transition: 'background-color 0.2s',
+                            '&:hover': { bgcolor: 'rgba(0,0,0,0.55)' },
+                        }}
+                    >
+                        <CameraAltIcon sx={{ color: '#fff', fontSize: size * 0.27 }} />
+                    </Box>
+                </>
+            )}
+        </Box>
+    );
+
+    const locationField = (
+        isEditing ? (
+            <Box sx={{ position: 'relative', mb: isDesktop ? 0 : 3 }}>
+                <TextField
+                    size="small" placeholder="Rechercher une ville..." value={editLocation}
+                    onChange={(e) => { onEditLocation(e.target.value); setCitySelected(false); }}
+                    slotProps={{
+                        input: {
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <LocationOnIcon sx={{ fontSize: '18px', color: 'text.secondary' }} />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <SearchIcon sx={{ fontSize: '18px', color: 'text.secondary' }} />
+                                </InputAdornment>
+                            ),
+                        },
+                    }}
+                    sx={{ width: '100%', '& .MuiOutlinedInput-root': { borderRadius: '20px' } }}
+                />
+                {citySuggestions.length > 0 && !citySelected && (
+                    <Box sx={{ backgroundColor: 'background.paper', borderRadius: '16px', mt: '4px', overflow: 'hidden', zIndex: 10, position: 'relative' }}>
+                        {citySuggestions.map((city) => (
+                            <Box key={city.code} onClick={() => { onEditLocation(city.nom); setCitySelected(true); setCitySuggestions([]); }}
+                                sx={{ px: 2, py: '10px', cursor: 'pointer', '&:hover': { backgroundColor: 'background.hover' } }}>
+                                <Typography sx={{ fontSize: '14px', color: 'text.primary' }}>
+                                    {city.nom}{city.codesPostaux?.[0] && ` (${city.codesPostaux[0]})`}
+                                </Typography>
+                            </Box>
+                        ))}
+                    </Box>
+                )}
+            </Box>
+        ) : locationText ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: isDesktop ? 0 : 3, justifyContent: isDesktop ? 'flex-start' : 'center' }}>
+                <LocationOnIcon sx={{ fontSize: '18px', color: 'text.secondary' }} />
+                <Typography sx={{ fontSize: '14px', color: 'text.secondary' }}>{locationText}</Typography>
+            </Box>
+        ) : null
+    );
+
+    if (isDesktop) {
+        return (
+            <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start', mb: 2 }}>
+                {avatarBox(100)}
+                <Box sx={{ flex: 1, pt: 0.5 }}>
+                    {/* Nom / Prénom */}
+                    {isEditing ? (
+                        <Stack direction="row" spacing={1} sx={{ mb: 0.5 }}>
+                            <TextField
+                                size="small" placeholder="Prénom" value={editFirstName}
+                                onChange={(e) => onEditFirstName(e.target.value)}
+                                sx={{
+                                    maxWidth: 160,
+                                    '& .MuiOutlinedInput-root': { borderRadius: '14px' },
+                                    '& .MuiInputBase-input': { fontWeight: 700, fontSize: '18px' },
+                                }}
+                            />
+                            <TextField
+                                size="small" placeholder="Nom" value={editLastName}
+                                onChange={(e) => onEditLastName(e.target.value)}
+                                sx={{
+                                    maxWidth: 160,
+                                    '& .MuiOutlinedInput-root': { borderRadius: '14px' },
+                                    '& .MuiInputBase-input': { fontWeight: 700, fontSize: '18px' },
+                                }}
+                            />
+                        </Stack>
+                    ) : (
+                        <Typography sx={{ fontSize: '22px', fontWeight: 700, mb: 0.25 }}>
+                            {displayName}
+                        </Typography>
+                    )}
+                    {/* Username */}
+                    <Typography sx={{ fontSize: '15px', fontWeight: 400, color: 'text.secondary', mb: 1 }}>
+                        {username}
+                    </Typography>
+                    {/* Location */}
+                    {locationField}
+                </Box>
+            </Box>
+        );
+    }
 
     return (
         <>
             {/* Avatar */}
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                <Box sx={{ position: 'relative', width: 120, height: 120 }}>
-                    <Avatar
-                        src={avatarUrl || undefined}
-                        alt={displayName}
-                        sx={{ width: 120, height: 120, objectFit: 'cover' }}
-                    />
-                    {isEditing && (
-                        <>
-                            <input ref={avatarInputRef} type="file" accept="image/*" hidden onChange={onAvatarUpload} />
-                            <Box
-                                onClick={() => avatarInputRef.current?.click()}
-                                sx={{
-                                    position: 'absolute', inset: 0, borderRadius: '50%',
-                                    bgcolor: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    cursor: 'pointer', transition: 'background-color 0.2s',
-                                    '&:hover': { bgcolor: 'rgba(0,0,0,0.55)' },
-                                }}
-                            >
-                                <CameraAltIcon sx={{ color: '#fff', fontSize: 32 }} />
-                            </Box>
-                        </>
-                    )}
-                </Box>
+                {avatarBox(120)}
             </Box>
 
             {/* Nom / Prénom */}
@@ -88,21 +200,7 @@ export default function ProfileHeader({
             </Typography>
 
             {/* Location */}
-            {isEditing ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mb: 3, px: 2 }}>
-                    <LocationOnIcon sx={{ fontSize: '20px', color: 'text.secondary' }} />
-                    <TextField
-                        size="small" placeholder="Localisation" value={editLocation}
-                        onChange={(e) => onEditLocation(e.target.value)}
-                        sx={{ flex: 1, maxWidth: 300, '& .MuiOutlinedInput-root': { borderRadius: '20px' } }}
-                    />
-                </Box>
-            ) : locationText ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mb: 3 }}>
-                    <LocationOnIcon sx={{ fontSize: '20px', color: 'text.secondary' }} />
-                    <Typography sx={{ fontSize: '15px', color: 'text.secondary' }}>{locationText}</Typography>
-                </Box>
-            ) : null}
+            <Box sx={{ px: 2 }}>{locationField}</Box>
         </>
     );
 }

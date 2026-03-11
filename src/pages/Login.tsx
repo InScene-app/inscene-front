@@ -3,7 +3,6 @@ import { Box, Typography, TextField, Alert, InputAdornment, IconButton } from '@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import api, { setAuthToken } from '../api/client';
-import { parseJwt } from '../utils/jwt';
 import PrimaryButton from '../components/common/PrimaryButton';
 
 export default function Login() {
@@ -24,7 +23,7 @@ export default function Login() {
       const token = result.data?.access_token;
       if (token) {
         setAuthToken(token);
-        parseJwt(token);
+        localStorage.setItem('profileCompleted', 'true');
       } else {
         setError('Aucun token reçu du serveur');
         return;
@@ -50,7 +49,7 @@ export default function Login() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        bgcolor: '#F2F6FC',
+        bgcolor: 'background.default',
         px: 3,
         // Annuler le padding du MainLayout/Container parent
         mx: { xs: -2.25, md: -3 },
@@ -95,7 +94,7 @@ export default function Login() {
         sx={{
           width: '100%',
           maxWidth: 400,
-          bgcolor: 'background.white',
+          bgcolor: 'background.paper',
           borderRadius: '24px',
           p: 3,
           display: 'flex',

@@ -20,7 +20,7 @@ export default function UploadSquare({ onClick }: UploadSquareProps) {
                 justifyContent: 'center',
                 cursor: 'pointer',
                 mx: 'auto',
-                '&:hover': { borderColor: 'primary.main', bgcolor: '#F2F6FC' },
+                '&:hover': { borderColor: 'primary.main', bgcolor: 'background.default' },
             }}
         >
             <AddIcon sx={{ fontSize: 32, color: '#999' }} />

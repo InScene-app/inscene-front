@@ -28,8 +28,8 @@ export default function JobSelectorDialog({ open, onClose, categories, editJobCo
                         <Box onClick={() => setOpenCategory(prev => prev === category.id ? null : category.id)}
                             sx={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                backgroundColor: '#F2F6FC', borderRadius: '12px', px: 2, py: 1.5,
-                                cursor: 'pointer', '&:hover': { backgroundColor: '#E3ECF7' },
+                                backgroundColor: 'background.default', borderRadius: '12px', px: 2, py: 1.5,
+                                cursor: 'pointer', '&:hover': { backgroundColor: 'background.hover' },
                             }}>
                             <Typography sx={{ fontSize: '14px', fontWeight: 600 }}>{category.name}</Typography>
                             <KeyboardArrowDownIcon sx={{
@@ -47,11 +47,11 @@ export default function JobSelectorDialog({ open, onClose, categories, editJobCo
                                             icon={active ? <CheckIcon sx={{ fontSize: 14 }} /> : undefined}
                                             sx={{
                                                 fontSize: '13px', fontWeight: active ? 600 : 400,
-                                                backgroundColor: active ? '#FF8C5F' : '#FFFFFF',
-                                                color: active ? '#FFFFFF' : '#000000',
+                                                backgroundColor: active ? 'primary.main' : 'background.paper',
+                                                color: active ? '#FFFFFF' : 'text.primary',
                                                 border: active ? 'none' : '1px solid #E0E0E0',
                                                 cursor: 'pointer', '& .MuiChip-icon': { color: '#FFFFFF' },
-                                                '&:hover': { backgroundColor: active ? '#E67E50' : '#F0F4FA' },
+                                                '&:hover': { backgroundColor: active ? 'primary.dark' : 'background.hover' },
                                             }} />
                                     );
                                 })}

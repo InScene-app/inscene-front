@@ -25,7 +25,7 @@ interface PersonalInfoFormData {
 const inputSx = (hasError = false) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: '100px',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'background.paper',
     '& fieldset': { border: hasError ? '1.5px solid #d32f2f' : 'none' },
   },
   '& .MuiInputBase-input::placeholder': {
@@ -67,7 +67,7 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
   return (
     <Box
       sx={{
-        backgroundColor: '#F2F6FC',
+        backgroundColor: 'background.default',
         minHeight: '100dvh',
         display: 'flex',
         flexDirection: 'column',
@@ -87,7 +87,7 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
           fontSize: '24px',
           fontWeight: 600,
           textAlign: 'center',
-          color: '#000000',
+          color: 'text.primary',
         }}
       >
         Informations personnelles
@@ -109,7 +109,7 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
             fontSize: '19px',
             fontWeight: 600,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           Récupérer via :
@@ -126,7 +126,9 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
               sx={{
                 width: '78px',
                 height: '50px',
-                backgroundColor: '#C7DCF0',
+                backgroundColor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'background.border',
                 borderRadius: '100px',
                 display: 'flex',
                 alignItems: 'center',
@@ -146,7 +148,7 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
             fontSize: '17px',
             fontWeight: 400,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           ou
@@ -176,7 +178,7 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
             fontSize: '19px',
             fontWeight: 600,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           Renseigner manuellement
@@ -189,7 +191,7 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
               fontFamily: 'Nunito, sans-serif',
               fontSize: '14px',
               fontWeight: 600,
-              color: '#000000',
+              color: 'text.primary',
               mb: '4px',
             }}
           >
@@ -211,7 +213,7 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
               fontFamily: 'Nunito, sans-serif',
               fontSize: '14px',
               fontWeight: 600,
-              color: '#000000',
+              color: 'text.primary',
               mb: '4px',
             }}
           >
@@ -233,7 +235,7 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
               fontFamily: 'Nunito, sans-serif',
               fontSize: '14px',
               fontWeight: 600,
-              color: '#000000',
+              color: 'text.primary',
               mb: '4px',
             }}
           >
@@ -256,7 +258,7 @@ export default function PersonalInfoStep({ data, onUpdate, onNext, progress }: P
               fontFamily: 'Nunito, sans-serif',
               fontSize: '14px',
               fontWeight: 600,
-              color: '#000000',
+              color: 'text.primary',
               mb: '4px',
             }}
           >

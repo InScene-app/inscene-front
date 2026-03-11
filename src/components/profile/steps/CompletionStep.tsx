@@ -12,7 +12,7 @@ export default function CompletionStep({ onViewProfile, onComplete, progress }: 
   return (
     <Box
       sx={{
-        backgroundColor: '#F2F6FC',
+        backgroundColor: 'background.default',
         minHeight: '100dvh',
         display: 'flex',
         flexDirection: 'column',
@@ -32,7 +32,7 @@ export default function CompletionStep({ onViewProfile, onComplete, progress }: 
             fontSize: '24px',
             fontWeight: 600,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
           }}
         >
           C'est parti !
@@ -60,7 +60,7 @@ export default function CompletionStep({ onViewProfile, onComplete, progress }: 
             fontSize: '17px',
             fontWeight: 400,
             textAlign: 'center',
-            color: '#000000',
+            color: 'text.primary',
             lineHeight: 1.6,
           }}
         >
@@ -76,10 +76,11 @@ export default function CompletionStep({ onViewProfile, onComplete, progress }: 
           onClick={onViewProfile}
           sx={{
             backgroundColor: 'transparent',
-            color: '#FF8C5F',
-            border: '1px solid #FF8C5F',
+            color: 'primary.main',
+            border: '1px solid',
+            borderColor: 'primary.main',
             '&:hover': {
-              backgroundColor: 'rgba(255, 140, 95, 0.04)',
+              backgroundColor: 'rgba(235, 102, 64, 0.04)',
             },
           }}
         >

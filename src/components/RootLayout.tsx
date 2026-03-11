@@ -8,12 +8,17 @@ export default function RootLayout() {
     const hasRedirected = useRef(false);
 
     useEffect(() => {
-        // En mode dev, rediriger vers /onboarding SEULEMENT au premier chargement
-        if (isDevMode && !hasRedirected.current && location.pathname !== '/onboarding') {
+        const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding') === 'true';
+        
+        // En mode dev : toujours rediriger pour tester facilement
+        // En mode prod : rediriger seulement si pas encore vu
+        const shouldRedirect = isDevMode || !hasSeenOnboarding;
+        
+        if (shouldRedirect && !hasRedirected.current && location.pathname !== '/onboarding') {
             hasRedirected.current = true;
             navigate('/onboarding', { replace: true });
         }
-    }, [isDevMode, navigate]);
+    }, [isDevMode, navigate, location.pathname]);
 
     return <Outlet />;
 }

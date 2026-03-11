@@ -14,7 +14,6 @@ export default function PrimaryButton({ children, fullWidth = false, sx, ...prop
         padding: '6px 20px',
         fontSize: '14px',
         fontWeight: 600,
-        color: '#ffffff',
         textTransform: 'none',
         borderRadius: '20px',
         width: fullWidth ? '100%' : 'max-content',

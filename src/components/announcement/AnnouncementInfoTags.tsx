@@ -56,7 +56,7 @@ export default function AnnouncementInfoTags({
         sx={{
           fontSize: '14px',
           fontWeight: 500,
-          backgroundColor: 'background.middle',
+          backgroundColor: 'background.tag',
           color: 'text.secondary',
           border: 'none',
           '& .MuiChip-icon': {
@@ -75,7 +75,7 @@ export default function AnnouncementInfoTags({
           sx={{
             fontSize: '14px',
             fontWeight: 500,
-            backgroundColor: 'background.middle',
+            backgroundColor: 'background.tag',
             color: 'text.secondary',
             border: 'none',
             '& .MuiChip-icon': {
@@ -94,7 +94,7 @@ export default function AnnouncementInfoTags({
         sx={{
           fontSize: '14px',
           fontWeight: 500,
-          backgroundColor: 'background.middle',
+          backgroundColor: 'background.tag',
           color: 'text.secondary',
           border: 'none',
           '& .MuiChip-icon': {

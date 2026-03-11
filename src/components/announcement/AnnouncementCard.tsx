@@ -11,14 +11,20 @@ interface AnnouncementCardProps {
   announcement: Announcement;
   isSaved?: boolean;
   onToggleSave?: (id: number) => void;
+  isSelected?: boolean;
+  onSelect?: (ann: Announcement) => void;
 }
 
-export default function AnnouncementCard({ announcement, isSaved = false, onToggleSave }: AnnouncementCardProps) {
+export default function AnnouncementCard({ announcement, isSaved = false, onToggleSave, isSelected, onSelect }: AnnouncementCardProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    window.scrollTo(0, 0);
-    navigate(`/announcement/${announcement.id}`);
+    if (onSelect) {
+      onSelect(announcement);
+    } else {
+      window.scrollTo(0, 0);
+      navigate(`/announcement/${announcement.id}`);
+    }
   };
 
   const displayDate = formatRelativeDate(announcement.createdAt);
@@ -30,10 +36,11 @@ export default function AnnouncementCard({ announcement, isSaved = false, onTogg
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         borderRadius: '35px',
-        backgroundColor: 'secondary.light',
+        backgroundColor: 'background.default',
+        border: '2px solid',
+        borderColor: isSelected ? 'primary.main' : 'transparent',
         '&:hover': {
-          transform: 'translateY(-2px)',
-          // boxShadow: '0px 4px 16px rgba(0,0,0,0.12)',
+          transform: onSelect ? undefined : 'translateY(-2px)',
         },
       }}
     >

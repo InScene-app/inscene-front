@@ -13,17 +13,21 @@ import MessageIcon from '@mui/icons-material/Message';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { ReactElement } from 'react';
 
-const HomeIcon = ({ active = false }: { active?: boolean }) => (
-  <Box
-    component="img"
-    src={active ? '/logo/logo_color.svg' : '/logo/logo_black.svg'}
-    alt="Home"
-    sx={{
-      width: 50,
-      height: 50,
-    }}
-  />
-);
+const HomeIcon = ({ active = false }: { active?: boolean }) => {
+  const theme = useTheme();
+  return (
+    <Box
+      component="img"
+      src={active ? '/logo/logo_color.svg' : '/logo/logo_black.svg'}
+      alt="Home"
+      sx={{
+        width: 50,
+        height: 50,
+        filter: !active && theme.palette.mode === 'dark' ? 'invert(1)' : 'none',
+      }}
+    />
+  );
+};
 
 interface MenuItem {
   label: string;
@@ -58,7 +62,9 @@ export default function Navigation() {
           left: 12,
           right: 12,
           borderRadius: '100px',
-          backgroundColor: 'background.white',
+          backgroundColor: 'background.paper',
+          border: '1px solid',
+          borderColor: 'background.border',
           zIndex: 1000,
           py: '10px',
           px: '20px',
@@ -75,7 +81,7 @@ export default function Navigation() {
               key={item.label}
               onClick={() => navigate(item.path)}
               sx={{
-                color: isActive ? 'primary.main' : 'background.black',
+                color: isActive ? 'primary.main' : 'text.secondary',
                 transition: 'color 0.2s ease',
                 padding: item.label === 'Home' ? 0 : 1,
                 '& .MuiSvgIcon-root': {
@@ -95,9 +101,13 @@ export default function Navigation() {
   return (
     <AppBar
       position="fixed"
-      elevation={1}
+      elevation={0}
+      style={{
+        backgroundColor: theme.palette.background.paper,
+        backgroundImage: 'none',
+      }}
       sx={{
-        backgroundColor: 'background.dark',
+        borderBottom: `1px solid ${theme.palette.divider}`,
       }}
     >
       <Toolbar
@@ -118,7 +128,7 @@ export default function Navigation() {
             <IconButton
               onClick={() => navigate(item.path)}
               sx={{
-                color: isActive ? 'primary.main' : 'background.black',
+                color: isActive ? 'primary.main' : 'text.secondary',
                 transition: 'all 0.2s ease',
                 '&:hover': {
                   color: 'primary.dark',
@@ -142,7 +152,7 @@ export default function Navigation() {
                 fontSize: '0.75rem',
                 fontWeight: 500,
                 color: 'text.primary',
-                backgroundColor: 'background.white',
+                backgroundColor: 'background.paper',
                 px: 1.5,
                 py: 0.5,
                 borderRadius: '8px',

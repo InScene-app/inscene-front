@@ -18,7 +18,8 @@ export default function AnnouncementProfileBlock({
     <Box
       sx={{
         borderRadius: '24px',
-        border: '1px solid #D9D9D9',
+        border: '1px solid',
+        borderColor: 'background.border',
         padding: '22px 20px',
         display: 'flex',
         flexDirection: 'column',

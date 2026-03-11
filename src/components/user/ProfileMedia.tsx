@@ -15,11 +15,13 @@ interface ProfileMediaProps {
     onPhotoUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onVideoUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    maxPerRow?: number;
+    maxRowHeight?: number;
 }
 
 export default function ProfileMedia({
     pictures, videos, otherFiles, isEditing, activeTab, onTabChange,
-    onPhotoUpload, onVideoUpload, onFileUpload,
+    onPhotoUpload, onVideoUpload, onFileUpload, maxPerRow, maxRowHeight,
 }: ProfileMediaProps) {
     const photoInputRef = useRef<HTMLInputElement>(null);
     const videoInputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +46,7 @@ export default function ProfileMedia({
                 {activeTab === 0 && (
                     <>
                         {pictures.length > 0 ? (
-                            <JustifiedPhotoGrid pictures={pictures} />
+                            <JustifiedPhotoGrid pictures={pictures} maxPerRow={maxPerRow} maxRowHeight={maxRowHeight} />
                         ) : (
                             <Typography sx={{ textAlign: 'center', color: 'text.secondary', mb: 2 }}>Aucune photo</Typography>
                         )}

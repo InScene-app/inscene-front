@@ -57,14 +57,14 @@ export default function DetailLayout({ children, isSaved = false, onToggleSave, 
           left: 0,
           right: 0,
           height: '60px',
-          backgroundColor: 'background.white',
+          backgroundColor: 'background.paper',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           px: isMobile ? 2 : 3,
           zIndex: 1000,
           // borderBottom: '1px solid',
-          borderColor: 'background.middle',
+          borderColor: 'background.tag',
         }}
       >
         {/* Bouton retour */}
