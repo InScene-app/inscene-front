@@ -51,10 +51,6 @@ export default function Login() {
         justifyContent: 'center',
         bgcolor: 'background.default',
         px: 3,
-        // Annuler le padding du MainLayout/Container parent
-        mx: { xs: -2.25, md: -3 },
-        mt: { xs: -2, md: -10 },
-        mb: { xs: -10, md: -2 },
       }}
     >
       {/* Logo */}

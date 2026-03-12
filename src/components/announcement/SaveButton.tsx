@@ -1,7 +1,7 @@
-import { IconButton } from '@mui/material';
+import { IconButton, useTheme } from '@mui/material';
 
-// CSS filter pour convertir le SVG noir en orange #EB6640
-const orangeFilter = 'brightness(0) saturate(100%) invert(52%) sepia(75%) saturate(551%) hue-rotate(334deg) brightness(101%)';
+// CSS filter pour convertir le SVG noir en #EB6640 (primary.main orange, light mode)
+const ORANGE_FILTER = 'brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(602%) hue-rotate(330deg) brightness(108%)';
 
 interface SaveButtonProps {
   isSaved?: boolean;
@@ -9,6 +9,10 @@ interface SaveButtonProps {
 }
 
 export default function SaveButton({ isSaved = false, onToggle }: SaveButtonProps) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+  const iconFilter = isSaved ? (isDark ? 'invert(1)' : ORANGE_FILTER) : (isDark ? 'invert(1)' : undefined);
+
   return (
     <IconButton
       onClick={(e) => {
@@ -27,7 +31,7 @@ export default function SaveButton({ isSaved = false, onToggle }: SaveButtonProp
         style={{
           width: 18,
           height: 18,
-          filter: isSaved ? orangeFilter : undefined,
+          filter: iconFilter,
         }}
       />
     </IconButton>

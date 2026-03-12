@@ -52,17 +52,17 @@ const chipSx = (active: boolean) => ({
   fontSize: '14px',
   fontFamily: 'Nunito, sans-serif',
   fontWeight: active ? 600 : 400,
-  backgroundColor: active ? 'primary.main' : 'background.paper',
+  backgroundColor: active ? 'secondary.main' : 'background.paper',
   color: active ? '#FFFFFF' : 'text.primary',
   transition: 'all 0.2s',
-  '&:hover': { backgroundColor: active ? 'primary.dark' : 'background.hover' },
+  '&:hover': { backgroundColor: active ? 'secondary.dark' : 'background.hover' },
 });
 
 const selectAllSx = (active: boolean) => ({
   ...chipSx(active),
-  backgroundColor: active ? 'primary.main' : 'secondary.light',
+  backgroundColor: active ? 'secondary.main' : 'secondary.light',
   color: active ? '#FFFFFF' : 'text.primary',
-  '&:hover': { backgroundColor: active ? 'primary.dark' : '#B0CCE4' },
+  '&:hover': { backgroundColor: active ? 'secondary.dark' : '#B0CCE4' },
 });
 
 export default function ProfessionalStep({ onUpdate, onNext, progress }: ProfessionalStepProps) {
@@ -77,7 +77,6 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
   const cityDebounce = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const [selectedExperience, setSelectedExperience] = useState<Set<string>>(new Set());
-  const allExpSelected = selectedExperience.size === EXPERIENCE_LEVELS.length;
 
   const [jobError, setJobError] = useState(false);
 
@@ -139,14 +138,6 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
       else next.add(level);
       return next;
     });
-  };
-
-  const handleSelectAllExperience = () => {
-    if (allExpSelected) {
-      setSelectedExperience(new Set());
-    } else {
-      setSelectedExperience(new Set(EXPERIENCE_LEVELS));
-    }
   };
 
   const handleNext = (): void => {
@@ -345,10 +336,6 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
           Niveau d'expérience
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          <Box onClick={handleSelectAllExperience} sx={selectAllSx(allExpSelected)}>
-            Tout sélectionner
-            {allExpSelected && <CheckIcon sx={{ fontSize: 16 }} />}
-          </Box>
           {EXPERIENCE_LEVELS.map((level) => {
             const active = selectedExperience.has(level);
             return (

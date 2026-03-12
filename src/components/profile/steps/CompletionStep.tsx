@@ -79,8 +79,10 @@ export default function CompletionStep({ onViewProfile, onComplete, progress }: 
             color: 'primary.main',
             border: '1px solid',
             borderColor: 'primary.main',
+            boxShadow: 'none',
             '&:hover': {
               backgroundColor: 'rgba(235, 102, 64, 0.04)',
+              boxShadow: 'none',
             },
           }}
         >

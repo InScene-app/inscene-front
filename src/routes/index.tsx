@@ -33,6 +33,10 @@ export const router = createBrowserRouter([
         element: <Settings />,
       },
       {
+        path: '/login',
+        element: <Login />,
+      },
+      {
         path: '/announcement/:id/apply',
         element: <ApplicationFlowPage />,
       },
@@ -59,10 +63,6 @@ export const router = createBrowserRouter([
       {
         path: 'account',
         element: <Account />,
-      },
-      {
-        path: 'login',
-        element: <Login />,
       },
       {
         path: 'announcement/:id',

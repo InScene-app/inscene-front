@@ -11,21 +11,24 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-// Filtre CSS : convertit du noir vers #EB6640 (orange)
+// Filtre CSS : convertit du noir vers #EB6640 (primary.main orange, light mode)
 const ORANGE_FILTER = 'brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(602%) hue-rotate(330deg) brightness(108%)';
+// Filtre CSS : convertit du noir vers #225182 (secondary.main bleu, dark mode)
+const BLUE_FILTER = 'brightness(0) saturate(100%) invert(27%) sepia(100%) saturate(350%) hue-rotate(173deg) brightness(106%)';
 const DARK_INACTIVE_FILTER = 'invert(1)'; // noir → blanc en dark mode
 
 const HomeIcon = ({ active = false }: { active?: boolean }) => {
   const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
   return (
     <Box
       component="img"
-      src={active ? '/logo/logo_color.svg' : '/logo/logo_black.svg'}
+      src={active && !isDark ? '/logo/logo_color.svg' : '/logo/logo_black.svg'}
       alt="Home"
       sx={{
         width: 50,
         height: 50,
-        filter: !active && theme.palette.mode === 'dark' ? 'invert(1)' : 'none',
+        filter: isDark ? (active ? BLUE_FILTER : DARK_INACTIVE_FILTER) : 'none',
       }}
     />
   );
@@ -100,7 +103,7 @@ export default function Navigation() {
         {menuItems.map((item, index) => {
           const isActive = currentIndex === index;
           const iconFilter = isActive
-            ? ORANGE_FILTER
+            ? (theme.palette.mode === 'dark' ? BLUE_FILTER : ORANGE_FILTER)
             : theme.palette.mode === 'dark' ? DARK_INACTIVE_FILTER : 'none';
           return (
             <IconButton
@@ -129,13 +132,20 @@ export default function Navigation() {
   }
 
   // Desktop: Top Navigation
+  const isHome = location.pathname === '/';
+  const isDark = theme.palette.mode === 'dark';
+  const logoSrc = isHome && !isDark ? '/logo/logo_color.svg' : '/logo/logo_black.svg';
+  const logoFilter = isDark ? (isHome ? BLUE_FILTER : DARK_INACTIVE_FILTER) : 'none';
+
   return (
     <AppBar
       position="fixed"
       elevation={0}
-      style={{
-        backgroundColor: theme.palette.background.paper,
+      sx={{
+        backgroundColor: 'background.paper',
         backgroundImage: 'none',
+        borderBottom: isDark ? '1px solid' : 'none',
+        borderColor: 'background.border',
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', px: 3 }}>
@@ -143,14 +153,14 @@ export default function Navigation() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Box
             component="img"
-            src={location.pathname === '/' ? '/logo/logo_color.svg' : '/logo/logo_black.svg'}
+            src={logoSrc}
             alt="InScène"
             onClick={() => navigate('/')}
             sx={{
               width: 50,
               height: 50,
               cursor: 'pointer',
-              filter: location.pathname !== '/' && theme.palette.mode === 'dark' ? 'invert(1)' : 'none',
+              filter: logoFilter,
             }}
           />
           <Box
@@ -158,10 +168,11 @@ export default function Navigation() {
               width: 320,
               display: 'flex',
               alignItems: 'center',
-              bgcolor: 'background.default',
+              bgcolor: 'background.paper',
               borderRadius: '50px',
               px: 2,
               py: 0.75,
+              boxShadow: '0px 2px 12px rgba(0,0,0,0.12)',
             }}
           >
             <SearchIcon sx={{ fontSize: 18, color: 'text.secondary', mr: 1, flexShrink: 0 }} />
@@ -180,7 +191,7 @@ export default function Navigation() {
           {desktopRightItems.map((item) => {
             const isActive = location.pathname === item.path;
             const iconFilter = isActive
-              ? ORANGE_FILTER
+              ? (theme.palette.mode === 'dark' ? BLUE_FILTER : ORANGE_FILTER)
               : theme.palette.mode === 'dark' ? DARK_INACTIVE_FILTER : 'none';
             return (
               <IconButton

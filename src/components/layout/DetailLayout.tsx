@@ -2,7 +2,12 @@ import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, IconButton, useMediaQuery, useTheme } from '@mui/material';
 
-const orangeFilter = 'brightness(0) saturate(100%) invert(52%) sepia(75%) saturate(551%) hue-rotate(334deg) brightness(101%)';
+// CSS filter pour convertir un SVG noir en #EB6640 (primary.main orange, light mode)
+const ORANGE_FILTER = 'brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(602%) hue-rotate(330deg) brightness(108%)';
+// CSS filter pour convertir un SVG noir en #225182 (secondary.main bleu, dark mode)
+const BLUE_FILTER = 'brightness(0) saturate(100%) invert(27%) sepia(100%) saturate(350%) hue-rotate(173deg) brightness(106%)';
+// CSS filter pour convertir un SVG noir en blanc (dark mode inactif)
+const WHITE_FILTER = 'invert(1)';
 
 interface DetailLayoutProps {
   children: ReactNode;
@@ -14,7 +19,7 @@ interface DetailLayoutProps {
   onToggleEdit?: () => void;
 }
 
-export default function DetailLayout({ children, isSaved = false, onToggleSave, onShare, isOwner = false, onToggleEdit }: DetailLayoutProps) {
+export default function DetailLayout({ children, isSaved = false, onToggleSave, onShare, isOwner = false, isEditing = false, onToggleEdit }: DetailLayoutProps) {
   const navigate = useNavigate();
 
   const handleSettings = () => {
@@ -22,6 +27,9 @@ export default function DetailLayout({ children, isSaved = false, onToggleSave, 
   };
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isDark = theme.palette.mode === 'dark';
+  const defaultFilter = isDark ? WHITE_FILTER : undefined;
+  const activeFilter = isDark ? BLUE_FILTER : ORANGE_FILTER;
 
   const handleBack = () => {
     navigate(-1);
@@ -61,7 +69,7 @@ export default function DetailLayout({ children, isSaved = false, onToggleSave, 
       >
         {/* Bouton retour */}
         <IconButton onClick={handleBack} sx={{ '&:hover': { backgroundColor: 'transparent' } }}>
-          <img src="/icons/back.svg" alt="Retour" style={{ width: 20, height: 20 }} />
+          <img src="/icons/back.svg" alt="Retour" style={{ width: 20, height: 20, filter: defaultFilter }} />
         </IconButton>
 
         {/* Boutons droite */}
@@ -71,17 +79,17 @@ export default function DetailLayout({ children, isSaved = false, onToggleSave, 
               onClick={(e) => { e.stopPropagation(); onToggleEdit?.(); }}
               sx={{ '&:hover': { backgroundColor: 'transparent' } }}
             >
-              <img src="/icons/edit.svg" alt="Modifier" style={{ width: 22, height: 22 }} />
+              <img src="/icons/edit.svg" alt="Modifier" style={{ width: 22, height: 22, filter: isEditing ? activeFilter : defaultFilter }} />
             </IconButton>
           )}
 
           <IconButton onClick={handleShare} sx={{ '&:hover': { backgroundColor: 'transparent' } }}>
-            <img src="/icons/share.svg" alt="Partager" style={{ width: 22, height: 22 }} />
+            <img src="/icons/share.svg" alt="Partager" style={{ width: 22, height: 22, filter: defaultFilter }} />
           </IconButton>
 
           {isOwner ? (
             <IconButton onClick={handleSettings} sx={{ '&:hover': { backgroundColor: 'transparent' } }}>
-              <img src="/icons/settings.svg" alt="Paramètres" style={{ width: 22, height: 22 }} />
+              <img src="/icons/settings.svg" alt="Paramètres" style={{ width: 22, height: 22, filter: defaultFilter }} />
             </IconButton>
           ) : (
             <IconButton
@@ -91,7 +99,7 @@ export default function DetailLayout({ children, isSaved = false, onToggleSave, 
               <img
                 src={isSaved ? '/icons/Sauvergardes.svg' : '/icons/Sauvergardes_empty.svg'}
                 alt={isSaved ? 'Sauvegardé' : 'Sauvegarder'}
-                style={{ width: 22, height: 22, filter: isSaved ? orangeFilter : undefined }}
+                style={{ width: 22, height: 22, filter: isSaved ? activeFilter : defaultFilter }}
               />
             </IconButton>
           )}

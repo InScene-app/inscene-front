@@ -9,6 +9,7 @@ import CompletionStep from './steps/CompletionStep';
 import api from '../../api/client';
 import { setAuthToken } from '../../api/client';
 import { parseJwt } from '../../utils/jwt';
+import { uploadUserFile, addSocialNetwork } from '../../api/userService';
 
 export interface ProfileData {
   // Informations personnelles
@@ -23,7 +24,8 @@ export interface ProfileData {
   jobCodes: string[];
 
   // Réalisations
-  socialLinks: string[];
+  socialLinks: { key: string; url: string }[];
+  diplomeFile?: File;
 }
 
 export default function ProfileSetup() {
@@ -38,6 +40,7 @@ export default function ProfileSetup() {
     location: '',
     jobCodes: [],
     socialLinks: [],
+    diplomeFile: undefined,
   });
 
   const handleNext = (): void => {
@@ -52,22 +55,34 @@ export default function ProfileSetup() {
     setProfileData(prev => ({ ...prev, ...data }));
   };
 
-  const handleComplete = async (): Promise<void> => {
+  const handleComplete = async (redirectPath: string = '/'): Promise<void> => {
     try {
-      // 1. Créer l'individual
-      await api.post('/individual', {
-        email: profileData.email,
-        password: profileData.password,
-        firstName: profileData.firstName,
-        lastName: profileData.lastName,
-      });
+      let token: string | undefined;
 
-      // 2. Auto-login pour récupérer le JWT
-      const loginRes = await api.post('/auth/login', {
-        email: profileData.email,
-        password: profileData.password,
-      });
-      const token = loginRes.data?.access_token;
+      try {
+        // 1. Créer l'individual
+        await api.post('/individual', {
+          email: profileData.email,
+          password: profileData.password,
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+        });
+
+        // 2. Auto-login pour récupérer le JWT
+        const loginRes = await api.post('/auth/login', {
+          email: profileData.email,
+          password: profileData.password,
+        });
+        token = loginRes.data?.access_token;
+      } catch {
+        // Email déjà existant → tentative de connexion directe
+        const loginRes = await api.post('/auth/login', {
+          email: profileData.email,
+          password: profileData.password,
+        });
+        token = loginRes.data?.access_token;
+      }
+
       if (!token) throw new Error('No token');
       setAuthToken(token);
 
@@ -84,8 +99,28 @@ export default function ProfileSetup() {
         await api.patch(`/individual/${userId}`, patchData);
       }
 
+      // 4. Upload diplôme si présent
+      if (profileData.diplomeFile) {
+        await uploadUserFile(userId, profileData.diplomeFile, 'Diploma');
+      }
+
+      // 5. Sauvegarder les liens sociaux
+      const SOCIAL_TO_ENUM: Record<string, string> = {
+        tiktok: 'TIKTOK',
+        instagram: 'INSTAGRAM',
+        x: 'TWITTER',
+        youtube: 'YOUTUBE',
+        linkedin: 'LINKEDIN',
+      };
+      for (const { key, url } of profileData.socialLinks) {
+        const name = SOCIAL_TO_ENUM[key];
+        if (name && url.trim()) {
+          await addSocialNetwork(userId, { name, url: url.trim() });
+        }
+      }
+
       localStorage.setItem('profileCompleted', 'true');
-      navigate('/');
+      navigate(redirectPath);
     } catch (err: unknown) {
       console.error('Erreur création profil:', err);
     }
@@ -139,8 +174,8 @@ export default function ProfileSetup() {
       case 5:
         return (
           <CompletionStep
-            onViewProfile={() => {/* TODO: Navigate to profile */}}
-            onComplete={handleComplete}
+            onViewProfile={() => handleComplete('/account')}
+            onComplete={() => handleComplete()}
             progress={getProgress()}
           />
         );

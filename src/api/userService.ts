@@ -1,6 +1,9 @@
 import api from './client';
 import { User, SocialNetwork, UserFile, Job } from '../types/user';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const withUrl = (f: UserFile): UserFile => ({ ...f, url: f.url ?? `${API_URL}/file/download/${f.id}` });
+
 export interface Category {
     id: number;
     name: string;
@@ -59,9 +62,9 @@ const mapUserResponse = (response: UserResponse): User => {
         socialNetworks: response.socialNetworks,
 
         // Files
-        files: response.files,
-        pictures: response.pictures,
-        videos: response.videos,
+        files: (response.files || []).map(withUrl),
+        pictures: (response.pictures || []).map(withUrl),
+        videos: (response.videos || []).map(withUrl),
 
         // Individual fields
         firstName: response.firstName,
@@ -94,9 +97,20 @@ export const uploadUserMedia = async (userId: number, file: File, category: stri
     const formData = new FormData();
     formData.append('file', file);
     formData.append('category', category);
-    await api.post(`/user/${userId}/media`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    await api.post(`/user/${userId}/media`, formData);
+};
+
+// Pour les catégories Portfolio et Diploma (non acceptées par /user/:id/media)
+export const uploadUserFile = async (userId: number, file: File, category: string): Promise<void> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('ownerId', String(userId));
+    formData.append('category', category);
+    await api.post(`/file/upload`, formData);
+};
+
+export const deleteFile = async (fileId: number): Promise<void> => {
+    await api.delete(`/file/${fileId}`);
 };
 
 export const getCategories = async (): Promise<Category[]> => {

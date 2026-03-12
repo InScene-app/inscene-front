@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Typography, Box, Stack, CircularProgress, Button } from '@mui/material';
+import { Typography, Box, Stack, CircularProgress, Button, useTheme } from '@mui/material';
 import { usePageLayout } from '../hooks/usePageLayout';
 import AnnouncementCard from '../components/announcement/AnnouncementCard';
 import ProfileCard from '../components/user/ProfileCard';
@@ -12,6 +12,8 @@ const PREVIEW_COUNT = 3;
 
 export default function Saved() {
     usePageLayout();
+    const theme = useTheme();
+    const isDark = theme.palette.mode === 'dark';
     const { isSaved, toggleSave, isUserSaved, toggleSaveUser } = useFavorites();
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
     const [savedUsers, setSavedUsers] = useState<any[]>([]);
@@ -47,7 +49,7 @@ export default function Saved() {
     if (!isLoggedIn) {
         return (
             <Box sx={{ mt: 4 }}>
-                <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+                <Typography sx={{ fontSize: '22px', fontWeight: 700, mb: 3 }}>
                     Sauvegardés
                 </Typography>
                 <Typography color="text.secondary">
@@ -67,13 +69,13 @@ export default function Saved() {
 
     return (
         <Box>
-            <Typography variant="h4" gutterBottom sx={{ mb: 3, fontWeight: 700 }}>
+            <Typography sx={{ fontSize: '22px', fontWeight: 700, mb: 3 }}>
                 Sauvegardés
             </Typography>
 
             {hasNothing ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 8, gap: 2 }}>
-                    <img src="/icons/Sauvergardes.svg" alt="Sauvegardés" style={{ width: 64, height: 64, opacity: 0.4 }} />
+                    <img src="/icons/Sauvergardes.svg" alt="Sauvegardés" style={{ width: 64, height: 64, opacity: 0.4, filter: isDark ? 'invert(1)' : undefined }} />
                     <Typography color="text.secondary" sx={{ textAlign: 'center' }}>
                         Aucun élément sauvegardé
                     </Typography>

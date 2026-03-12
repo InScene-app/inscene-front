@@ -134,9 +134,7 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
             color: isDark ? 'text.primary' : 'secondary.main',
             border: '1px solid',
             borderColor: isDark ? 'background.border' : 'secondary.main',
-            '&:hover': {
-              backgroundColor: 'background.hover',
-            },
+            '&:hover': { backgroundColor: 'background.hover' },
           }}
         >
           Nous contacter
@@ -189,9 +187,7 @@ export default function WelcomeStep({ onStart }: WelcomeStepProps) {
             color: 'primary.dark',
             border: '1px solid',
             borderColor: 'primary.dark',
-            '&:hover': {
-              backgroundColor: 'rgba(230, 126, 80, 0.04)',
-            },
+            '&:hover': { backgroundColor: 'rgba(230, 126, 80, 0.04)' },
           }}
         >
           Continuer sans profil

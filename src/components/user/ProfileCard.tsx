@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Avatar, Chip, IconButton } from '@mui/material';
+import { Box, Typography, Avatar, Chip, IconButton, useTheme } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-const orangeFilter = 'brightness(0) saturate(100%) invert(52%) sepia(75%) saturate(551%) hue-rotate(334deg) brightness(101%)';
+
+// CSS filter pour convertir le SVG noir en #EB6640 (primary.main orange, light mode)
+const ORANGE_FILTER = 'brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(602%) hue-rotate(330deg) brightness(108%)';
 
 interface ProfileCardProps {
     user: {
@@ -22,6 +24,9 @@ interface ProfileCardProps {
 
 export default function ProfileCard({ user, isSaved = false, onToggleSave }: ProfileCardProps) {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isDark = theme.palette.mode === 'dark';
+    const saveIconFilter = isSaved ? (isDark ? 'invert(1)' : ORANGE_FILTER) : (isDark ? 'invert(1)' : undefined);
 
     const firstName = user.firstName || '';
     const lastName = user.lastName || '';
@@ -51,8 +56,8 @@ export default function ProfileCard({ user, isSaved = false, onToggleSave }: Pro
                 borderRadius: '20px',
                 bgcolor: 'background.default',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
-                '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
+                transition: 'all 0.2s ease',
+                '&:hover': { transform: 'translateY(-2px)' },
             }}
         >
             <Avatar
@@ -108,7 +113,7 @@ export default function ProfileCard({ user, isSaved = false, onToggleSave }: Pro
                     <img
                         src={isSaved ? '/icons/Sauvergardes.svg' : '/icons/Sauvergardes_empty.svg'}
                         alt={isSaved ? 'Sauvegardé' : 'Sauvegarder'}
-                        style={{ width: 18, height: 18, filter: isSaved ? orangeFilter : undefined }}
+                        style={{ width: 18, height: 18, filter: saveIconFilter }}
                     />
                 </IconButton>
             )}

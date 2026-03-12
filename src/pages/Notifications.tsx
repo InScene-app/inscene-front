@@ -1,16 +1,18 @@
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, useTheme } from '@mui/material';
 import { usePageLayout } from '../hooks/usePageLayout';
 
 export default function Notifications() {
   usePageLayout();
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3, fontWeight: 700 }}>
+      <Typography sx={{ fontSize: '22px', fontWeight: 700, mb: 3 }}>
         Notifications
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 8, gap: 2 }}>
-        <img src="/icons/Notif.svg" alt="Notifications" style={{ width: 64, height: 64, opacity: 0.4 }} />
+        <img src="/icons/Notif.svg" alt="Notifications" style={{ width: 64, height: 64, opacity: 0.4, filter: isDark ? 'invert(1)' : undefined }} />
         <Typography color="text.secondary" sx={{ textAlign: 'center' }}>
           Aucune notification
         </Typography>

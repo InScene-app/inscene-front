@@ -1,11 +1,13 @@
-import { Box, Typography, TextField, InputAdornment } from '@mui/material';
-import { useState } from 'react';
+import { Box, Typography, TextField, InputAdornment, useTheme, IconButton } from '@mui/material';
+import { useState, useRef, type ChangeEvent } from 'react';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import AddIcon from '@mui/icons-material/Add';
 import LinkIcon from '@mui/icons-material/Link';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import { ProfileData } from '../ProfileSetup';
 import PrimaryButton from '../../common/PrimaryButton';
 import ProgressBar from '../ProgressBar';
@@ -43,10 +45,10 @@ const inputSx = {
   },
 };
 
-const iconBoxSx = (active: boolean) => ({
+const iconBoxSx = (active: boolean, isDark: boolean) => ({
   width: '48px',
   height: '40px',
-  backgroundColor: active ? 'secondary.main' : 'secondary.light',
+  backgroundColor: active ? (isDark ? 'secondary.main' : 'primary.main') : 'background.paper',
   borderRadius: '100px',
   display: 'flex',
   alignItems: 'center',
@@ -57,9 +59,9 @@ const iconBoxSx = (active: boolean) => ({
   flexShrink: 0,
 });
 
-const toggleBoxSx = (active: boolean) => ({
+const toggleBoxSx = (active: boolean, isDark: boolean) => ({
   height: '40px',
-  backgroundColor: active ? 'secondary.main' : 'secondary.light',
+  backgroundColor: active ? (isDark ? 'secondary.main' : 'primary.main') : 'background.paper',
   borderRadius: '100px',
   display: 'flex',
   alignItems: 'center',
@@ -72,16 +74,19 @@ const toggleBoxSx = (active: boolean) => ({
 });
 
 const SOCIALS = [
-  { key: 'tiktok', icon: <TikTokIcon />, label: 'TikTok' },
-  { key: 'instagram', icon: <InstagramIcon sx={{ fontSize: 20 }} />, label: 'Instagram' },
-  { key: 'facebook', icon: <FacebookIcon sx={{ fontSize: 20 }} />, label: 'Facebook' },
-  { key: 'x', icon: <XIcon />, label: 'X' },
-  { key: 'youtube', icon: <YouTubeIcon sx={{ fontSize: 20 }} />, label: 'YouTube' },
-  { key: 'autre', icon: null, label: 'Autre' },
+  { key: 'tiktok', icon: <TikTokIcon />, label: 'TikTok', placeholder: 'Lien TikTok' },
+  { key: 'instagram', icon: <InstagramIcon sx={{ fontSize: 20 }} />, label: 'Instagram', placeholder: 'Lien Instagram' },
+  { key: 'facebook', icon: <FacebookIcon sx={{ fontSize: 20 }} />, label: 'Facebook', placeholder: 'Lien Facebook' },
+  { key: 'x', icon: <XIcon />, label: 'X', placeholder: 'Lien X (Twitter)' },
+  { key: 'youtube', icon: <YouTubeIcon sx={{ fontSize: 20 }} />, label: 'YouTube', placeholder: 'Lien YouTube' },
+  { key: 'autre', icon: null, label: 'Autre', placeholder: '' },
 ];
 
 export default function AchievementsStep({ onUpdate, onNext, progress }: AchievementsStepProps) {
-  const [selectedSocials, setSelectedSocials] = useState<Set<string>>(new Set());
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+
+  const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
   const [showAutreInputs, setShowAutreInputs] = useState(false);
   const [autreNature, setAutreNature] = useState('');
   const [autreLink, setAutreLink] = useState('');
@@ -89,27 +94,44 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
   const [activePortfolioToggle, setActivePortfolioToggle] = useState<'lien' | 'fichier' | null>(null);
   const [portfolioLink, setPortfolioLink] = useState('');
 
+  const diplomeInputRef = useRef<HTMLInputElement>(null);
+  const [diplomeFile, setDiplomeFile] = useState<File | null>(null);
+
   const handleToggleSocial = (key: string) => {
     if (key === 'autre') {
       setShowAutreInputs(prev => !prev);
       return;
     }
-    setSelectedSocials(prev => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
+    setSocialLinks(prev => {
+      const next = { ...prev };
+      if (key in next) {
+        delete next[key];
+      } else {
+        next[key] = '';
+      }
       return next;
     });
   };
 
+  const handleSocialLinkChange = (key: string, url: string) => {
+    setSocialLinks(prev => ({ ...prev, [key]: url }));
+  };
+
+  const handleDiplomeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setDiplomeFile(file);
+  };
+
   const handleNext = (): void => {
-    const socialLinks = Array.from(selectedSocials);
-    if (autreLink.trim()) socialLinks.push(autreLink.trim());
-    onUpdate({
-      socialLinks,
-    });
+    const links: { key: string; url: string }[] = Object.entries(socialLinks)
+      .filter(([, url]) => url.trim())
+      .map(([key, url]) => ({ key, url: url.trim() }));
+    if (autreLink.trim()) links.push({ key: 'autre', url: autreLink.trim() });
+    onUpdate({ socialLinks: links, diplomeFile: diplomeFile || undefined });
     onNext();
   };
+
+  const activeSocials = SOCIALS.filter(s => s.key !== 'autre' && s.key in socialLinks);
 
   return (
     <Box
@@ -149,12 +171,12 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
             Réseaux sociaux
           </Typography>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-start', gap: '6px', flexWrap: 'wrap' }}>
             {SOCIALS.map((social) => {
-              const active = social.key === 'autre' ? showAutreInputs : selectedSocials.has(social.key);
+              const active = social.key === 'autre' ? showAutreInputs : social.key in socialLinks;
               if (social.key === 'autre') {
                 return (
-                  <Box key={social.key} onClick={() => handleToggleSocial(social.key)} sx={toggleBoxSx(active)}>
+                  <Box key={social.key} onClick={() => handleToggleSocial(social.key)} sx={toggleBoxSx(active, isDark)}>
                     <Typography variant="inherit" sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', fontWeight: 600 }}>
                       Autre
                     </Typography>
@@ -162,12 +184,50 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
                 );
               }
               return (
-                <Box key={social.key} onClick={() => handleToggleSocial(social.key)} sx={iconBoxSx(active)}>
+                <Box key={social.key} onClick={() => handleToggleSocial(social.key)} sx={iconBoxSx(active, isDark)}>
                   {social.icon}
                 </Box>
               );
             })}
           </Box>
+
+          {/* Inputs par réseau actif */}
+          {activeSocials.length > 0 && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', mt: '12px' }}>
+              {activeSocials.map((social) => (
+                <TextField
+                  key={social.key}
+                  fullWidth
+                  size="small"
+                  placeholder={social.placeholder}
+                  value={socialLinks[social.key] || ''}
+                  onChange={(e) => handleSocialLinkChange(social.key, e.target.value)}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <PrimaryButton
+                            onClick={() => {}}
+                            sx={{
+                              backgroundColor: isDark ? 'secondary.main' : 'primary.main',
+                              '&:hover': { backgroundColor: isDark ? 'secondary.dark' : 'primary.dark' },
+                              minWidth: 'auto',
+                              py: '4px',
+                              px: '14px',
+                              fontSize: '12px',
+                            }}
+                          >
+                            Ajouter
+                          </PrimaryButton>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                  sx={inputSx}
+                />
+              ))}
+            </Box>
+          )}
 
           {/* Inputs "Autre" */}
           {showAutreInputs && (
@@ -188,12 +248,6 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
                 onChange={(e) => setAutreLink(e.target.value)}
                 sx={inputSx}
               />
-              <PrimaryButton
-                onClick={() => {}}
-                sx={{ alignSelf: 'flex-start', backgroundColor: 'secondary.main', '&:hover': { backgroundColor: 'secondary.dark' } }}
-              >
-                Ajouter
-              </PrimaryButton>
             </Box>
           )}
         </Box>
@@ -206,19 +260,58 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
           >
             Diplômes
           </Typography>
-          <PrimaryButton
-            onClick={() => {}}
-            sx={{
-              backgroundColor: 'secondary.main',
-              '&:hover': { backgroundColor: 'secondary.dark' },
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
+          <input
+            ref={diplomeInputRef}
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            style={{ display: 'none' }}
+            onChange={handleDiplomeChange}
+          />
+
+          {/* Card du fichier sélectionné */}
+          {diplomeFile && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                p: 1.5,
+                mb: '8px',
+                borderRadius: 2,
+                bgcolor: 'background.paper',
+              }}
+            >
+              <InsertDriveFileOutlinedIcon sx={{ color: 'primary.main', fontSize: 28, flexShrink: 0 }} />
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography sx={{ fontSize: '14px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {diplomeFile.name}
+                </Typography>
+                <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
+                  {diplomeFile.name.split('.').pop()?.toUpperCase()} —{' '}
+                  {diplomeFile.size >= 1000000
+                    ? `${(diplomeFile.size / 1000000).toFixed(1)} Mo`
+                    : `${Math.round(diplomeFile.size / 1000)} Ko`}
+                </Typography>
+              </Box>
+              <IconButton
+                size="small"
+                onClick={() => {
+                  setDiplomeFile(null);
+                  if (diplomeInputRef.current) diplomeInputRef.current.value = '';
+                }}
+              >
+                <CloseIcon sx={{ fontSize: 16 }} />
+              </IconButton>
+            </Box>
+          )}
+
+          {/* Bouton ajouter */}
+          <Box onClick={() => diplomeInputRef.current?.click()} sx={{ ...toggleBoxSx(false, isDark), width: 'fit-content' }}>
             <AddIcon sx={{ fontSize: 18 }} />
-            Ajouter un fichier
-          </PrimaryButton>
+            <Typography variant="inherit" sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', fontWeight: 600 }}>
+              Ajouter un fichier
+            </Typography>
+          </Box>
         </Box>
 
         {/* Bloc 3 - Portfolio et CV */}
@@ -233,7 +326,7 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
           <Box sx={{ display: 'flex', gap: '8px', mb: activePortfolioToggle === 'lien' ? '12px' : 0 }}>
             <Box
               onClick={() => setActivePortfolioToggle(prev => prev === 'lien' ? null : 'lien')}
-              sx={toggleBoxSx(activePortfolioToggle === 'lien')}
+              sx={toggleBoxSx(activePortfolioToggle === 'lien', isDark)}
             >
               <LinkIcon sx={{ fontSize: 18 }} />
               <Typography variant="inherit" sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', fontWeight: 600 }}>
@@ -242,7 +335,7 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
             </Box>
             <Box
               onClick={() => setActivePortfolioToggle(prev => prev === 'fichier' ? null : 'fichier')}
-              sx={toggleBoxSx(activePortfolioToggle === 'fichier')}
+              sx={toggleBoxSx(activePortfolioToggle === 'fichier', isDark)}
             >
               <UploadFileIcon sx={{ fontSize: 18 }} />
               <Typography variant="inherit" sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', fontWeight: 600 }}>
@@ -265,8 +358,8 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
                       <PrimaryButton
                         onClick={() => {}}
                         sx={{
-                          backgroundColor: 'secondary.main',
-                          '&:hover': { backgroundColor: 'secondary.dark' },
+                          backgroundColor: isDark ? 'secondary.main' : 'primary.main',
+                          '&:hover': { backgroundColor: isDark ? 'secondary.dark' : 'primary.dark' },
                           minWidth: 'auto',
                           py: '4px',
                           px: '14px',

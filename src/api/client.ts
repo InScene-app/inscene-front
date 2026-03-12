@@ -76,7 +76,7 @@ export async function logout() {
     // clear client state
     localStorage.removeItem('access_token');
     delete api.defaults.headers.common.Authorization;
-    try { window.location.href = '/login'; } catch (e) { }
+    try { window.location.href = '/'; } catch (e) { }
 }
 
 export default api;

@@ -10,7 +10,7 @@ import ProfileActivities from '../components/user/ProfileActivities';
 import ProfileMedia from '../components/user/ProfileMedia';
 import ProfileDiplomas from '../components/user/ProfileDiplomas';
 import JobSelectorDialog from '../components/user/JobSelectorDialog';
-import { getUserById, updateIndividual, uploadUserMedia, getCategories, Category, followUser, unfollowUser, getFollowingIds, addSocialNetwork, deleteSocialNetwork } from '../api/userService';
+import { getUserById, updateIndividual, uploadUserMedia, uploadUserFile, deleteFile, getCategories, Category, followUser, unfollowUser, getFollowingIds, addSocialNetwork, deleteSocialNetwork } from '../api/userService';
 import { User, SocialNetwork } from '../types/user';
 import { parseJwt } from '../utils/jwt';
 import { useFavorites } from '../hooks/useFavorites';
@@ -142,8 +142,20 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
     const makeUploadHandler = (category: string) => async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file || !finalId) return;
-        try { await uploadUserMedia(finalId, file, category); await fetchUser(); } catch { /* ignore */ }
+        try {
+            const needsFileEndpoint = category === 'Portfolio' || category === 'Diploma';
+            if (needsFileEndpoint) {
+                await uploadUserFile(finalId, file, category);
+            } else {
+                await uploadUserMedia(finalId, file, category);
+            }
+            await fetchUser();
+        } catch (err) { console.error('Upload error:', err); }
         e.target.value = '';
+    };
+
+    const handleDeleteFile = async (fileId: number) => {
+        try { await deleteFile(fileId); await fetchUser(); } catch (err) { console.error('Delete error:', err); }
     };
 
     // Job selector
@@ -301,6 +313,7 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
                     onPhotoUpload={makeUploadHandler('Picture')}
                     onVideoUpload={makeUploadHandler('Video')}
                     onFileUpload={makeUploadHandler('Portfolio')}
+                    onDeleteFile={handleDeleteFile}
                     maxPerRow={isDesktop ? 3 : 2}
                     maxRowHeight={isDesktop ? 350 : 250}
                 />

@@ -15,7 +15,7 @@ export default function ProgressBar({ progress }: ProgressBarProps) {
             sx={{
               height: 8,
               borderRadius: 4,
-              backgroundColor: '#E0E0E0',
+              backgroundColor: 'background.border',
               '& .MuiLinearProgress-bar': {
                 borderRadius: 4,
                 backgroundColor: 'primary.main'

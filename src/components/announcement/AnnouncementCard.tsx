@@ -32,12 +32,15 @@ export default function AnnouncementCard({ announcement, isSaved = false, onTogg
 
   return (
     <Card
+      elevation={0}
       onClick={handleClick}
       sx={{
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         borderRadius: '35px',
         backgroundColor: 'background.default',
+        backgroundImage: 'none',
+        boxShadow: 'none',
         border: '2px solid',
         borderColor: isSelected ? 'primary.main' : 'transparent',
         '&:hover': {

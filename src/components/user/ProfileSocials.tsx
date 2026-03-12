@@ -38,7 +38,7 @@ export default function ProfileSocials({ isEditing, socialNetworks, editSocials,
 
     if (isEditing) {
         return (
-            <Box sx={{ mb: 3, px: 2 }}>
+            <Box sx={{ mb: 3, px: 2, mt: 2 }}>
                 {editSocials.length > 0 && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap', mb: 2 }}>
                         {editSocials.map((social, index) => {

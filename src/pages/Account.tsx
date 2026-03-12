@@ -41,7 +41,7 @@ export default function Account() {
           <PrimaryButton
             fullWidth
             onClick={() => navigate('/login')}
-            sx={{ borderRadius: '50px', padding: '12px' }}
+            sx={{ borderRadius: '50px', padding: '12px', boxShadow: 'none', '&:hover': { boxShadow: 'none' } }}
           >
             Se connecter
           </PrimaryButton>
@@ -55,8 +55,10 @@ export default function Account() {
               color: 'primary.main',
               border: '2px solid',
               borderColor: 'primary.main',
+              boxShadow: 'none',
               '&:hover': {
                 backgroundColor: 'primary.light',
+                boxShadow: 'none',
               },
             }}
           >
