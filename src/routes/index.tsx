@@ -44,34 +44,34 @@ export const router = createBrowserRouter([
         path: '/',
         element: <MainLayout />,
         children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: 'saved',
-        element: <Saved />,
-      },
-      {
-        path: 'notifications',
-        element: <Notifications />,
-      },
-      {
-        path: 'messages',
-        element: <Messages />,
-      },
-      {
-        path: 'account',
-        element: <Account />,
-      },
-      {
-        path: 'announcement/:id',
-        element: <AnnouncementDetail />,
-      },
-      {
-        path: 'profile/:id',
-        element: <UserProfile />,
-      },
+          {
+            index: true,
+            element: <Home />,
+          },
+          {
+            path: 'saved',
+            element: <Saved />,
+          },
+          {
+            path: 'notifications',
+            element: <Notifications />,
+          },
+          {
+            path: 'messages',
+            element: <Messages />,
+          },
+          {
+            path: 'account',
+            element: <Account />,
+          },
+          {
+            path: 'announcement/:id',
+            element: <AnnouncementDetail />,
+          },
+          {
+            path: 'profile/:id',
+            element: <UserProfile />,
+          },
         ],
       },
     ],

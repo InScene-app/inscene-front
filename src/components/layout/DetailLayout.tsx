@@ -43,7 +43,7 @@ export default function DetailLayout({ children, isSaved = false, onToggleSave, 
         navigator.share({
           title: document.title,
           url: window.location.href,
-        }).catch(() => {});
+        }).catch(() => { });
       }
     }
   };

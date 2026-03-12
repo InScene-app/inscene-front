@@ -207,7 +207,7 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
                       endAdornment: (
                         <InputAdornment position="end">
                           <PrimaryButton
-                            onClick={() => {}}
+                            onClick={() => { }}
                             sx={{
                               backgroundColor: isDark ? 'secondary.main' : 'primary.main',
                               '&:hover': { backgroundColor: isDark ? 'secondary.dark' : 'primary.dark' },
@@ -356,7 +356,7 @@ export default function AchievementsStep({ onUpdate, onNext, progress }: Achieve
                   endAdornment: (
                     <InputAdornment position="end">
                       <PrimaryButton
-                        onClick={() => {}}
+                        onClick={() => { }}
                         sx={{
                           backgroundColor: isDark ? 'secondary.main' : 'primary.main',
                           '&:hover': { backgroundColor: isDark ? 'secondary.dark' : 'primary.dark' },

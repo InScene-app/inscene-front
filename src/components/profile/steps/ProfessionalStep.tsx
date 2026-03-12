@@ -169,184 +169,184 @@ export default function ProfessionalStep({ onUpdate, onNext, progress }: Profess
       <Box sx={{ flex: 1 }} />
 
       <Box sx={{ px: '36px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* Titre */}
-      <Typography
-        variant="inherit"
-        sx={{
-          fontFamily: 'Quicksand, sans-serif',
-          fontSize: '24px',
-          fontWeight: 600,
-          textAlign: 'center',
-          color: 'text.primary',
-        }}
-      >
-        Profil professionnel
-      </Typography>
-
-      {/* Bloc 1 - Métier */}
-      <Box>
+        {/* Titre */}
         <Typography
           variant="inherit"
-          sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: jobError ? 'error.main' : 'text.primary', mb: '8px' }}
+          sx={{
+            fontFamily: 'Quicksand, sans-serif',
+            fontSize: '24px',
+            fontWeight: 600,
+            textAlign: 'center',
+            color: 'text.primary',
+          }}
         >
-          Métier *{jobError && ' — Sélectionne au moins un métier'}
+          Profil professionnel
         </Typography>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {/* Tout sélectionner */}
-          <Box onClick={handleSelectAllJobs} sx={selectAllSx(allJobsSelected)}>
-            Tout sélectionner
-            {allJobsSelected && <CheckIcon sx={{ fontSize: 16 }} />}
-          </Box>
+        {/* Bloc 1 - Métier */}
+        <Box>
+          <Typography
+            variant="inherit"
+            sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: jobError ? 'error.main' : 'text.primary', mb: '8px' }}
+          >
+            Métier *{jobError && ' — Sélectionne au moins un métier'}
+          </Typography>
 
-          {categories.map((category) => {
-            const categoryJobsSelected = category.jobs.every(j => selectedJobs.has(j.code));
-            return (
-              <Box key={category.id}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {/* Tout sélectionner */}
+            <Box onClick={handleSelectAllJobs} sx={selectAllSx(allJobsSelected)}>
+              Tout sélectionner
+              {allJobsSelected && <CheckIcon sx={{ fontSize: 16 }} />}
+            </Box>
+
+            {categories.map((category) => {
+              const categoryJobsSelected = category.jobs.every(j => selectedJobs.has(j.code));
+              return (
+                <Box key={category.id}>
+                  <Box
+                    onClick={() => handleToggleCategory(category.id)}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      backgroundColor: categoryJobsSelected ? 'secondary.main' : 'background.paper',
+                      borderRadius: '24px',
+                      px: '16px',
+                      py: '12px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      '&:hover': { backgroundColor: categoryJobsSelected ? 'secondary.dark' : 'background.hover' },
+                    }}
+                  >
+                    <Typography
+                      variant="inherit"
+                      sx={{
+                        fontFamily: 'Nunito, sans-serif',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: categoryJobsSelected ? '#FFFFFF' : 'text.primary',
+                      }}
+                    >
+                      {category.name}
+                    </Typography>
+                    <KeyboardArrowDownIcon
+                      sx={{
+                        fontSize: 20,
+                        color: categoryJobsSelected ? '#FFFFFF' : '#666',
+                        transition: 'transform 0.2s',
+                        transform: openCategory === category.id ? 'rotate(180deg)' : 'rotate(0deg)',
+                      }}
+                    />
+                  </Box>
+
+                  <Collapse in={openCategory === category.id}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '6px', mt: '6px', ml: '8px' }}>
+                      {category.jobs.map((job) => {
+                        const active = selectedJobs.has(job.code);
+                        return (
+                          <Box key={job.code} onClick={() => handleToggleJob(job)} sx={chipSx(active)}>
+                            {job.name}
+                            {active && <CheckIcon sx={{ fontSize: 14 }} />}
+                          </Box>
+                        );
+                      })}
+                    </Box>
+                  </Collapse>
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+
+        {/* Bloc 2 - Localisation */}
+        <Box>
+          <Typography
+            variant="inherit"
+            sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: 'text.primary', mb: '4px' }}
+          >
+            Localisation
+          </Typography>
+          <TextField
+            fullWidth
+            placeholder="Lyon"
+            value={cityQuery}
+            onChange={(e) => {
+              setCityQuery(e.target.value);
+              if (selectedCity) setSelectedCity('');
+            }}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon sx={{ color: '#999' }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '100px',
+                backgroundColor: 'background.paper',
+                '& fieldset': { border: 'none' },
+              },
+              '& .MuiInputBase-input::placeholder': {
+                fontSize: '13px',
+                fontStyle: 'italic',
+              },
+            }}
+          />
+          {citySuggestions.length > 0 && !selectedCity && (
+            <Box
+              sx={{
+                backgroundColor: 'background.paper',
+                borderRadius: '16px',
+                mt: '4px',
+                overflow: 'hidden',
+              }}
+            >
+              {citySuggestions.map((city) => (
                 <Box
-                  onClick={() => handleToggleCategory(category.id)}
+                  key={city.code}
+                  onClick={() => handleSelectCity(city)}
                   sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    backgroundColor: categoryJobsSelected ? 'secondary.main' : 'background.paper',
-                    borderRadius: '24px',
                     px: '16px',
-                    py: '12px',
+                    py: '10px',
                     cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    '&:hover': { backgroundColor: categoryJobsSelected ? 'secondary.dark' : 'background.hover' },
+                    '&:hover': { backgroundColor: 'background.hover' },
                   }}
                 >
                   <Typography
                     variant="inherit"
-                    sx={{
-                      fontFamily: 'Nunito, sans-serif',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: categoryJobsSelected ? '#FFFFFF' : 'text.primary',
-                    }}
+                    sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', color: 'text.primary' }}
                   >
-                    {category.name}
+                    {city.nom} {city.codesPostaux?.[0] && `(${city.codesPostaux[0]})`}
                   </Typography>
-                  <KeyboardArrowDownIcon
-                    sx={{
-                      fontSize: 20,
-                      color: categoryJobsSelected ? '#FFFFFF' : '#666',
-                      transition: 'transform 0.2s',
-                      transform: openCategory === category.id ? 'rotate(180deg)' : 'rotate(0deg)',
-                    }}
-                  />
                 </Box>
-
-                <Collapse in={openCategory === category.id}>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '6px', mt: '6px', ml: '8px' }}>
-                    {category.jobs.map((job) => {
-                      const active = selectedJobs.has(job.code);
-                      return (
-                        <Box key={job.code} onClick={() => handleToggleJob(job)} sx={chipSx(active)}>
-                          {job.name}
-                          {active && <CheckIcon sx={{ fontSize: 14 }} />}
-                        </Box>
-                      );
-                    })}
-                  </Box>
-                </Collapse>
-              </Box>
-            );
-          })}
+              ))}
+            </Box>
+          )}
         </Box>
-      </Box>
 
-      {/* Bloc 2 - Localisation */}
-      <Box>
-        <Typography
-          variant="inherit"
-          sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: 'text.primary', mb: '4px' }}
-        >
-          Localisation
-        </Typography>
-        <TextField
-          fullWidth
-          placeholder="Lyon"
-          value={cityQuery}
-          onChange={(e) => {
-            setCityQuery(e.target.value);
-            if (selectedCity) setSelectedCity('');
-          }}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon sx={{ color: '#999' }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '100px',
-              backgroundColor: 'background.paper',
-              '& fieldset': { border: 'none' },
-            },
-            '& .MuiInputBase-input::placeholder': {
-              fontSize: '13px',
-              fontStyle: 'italic',
-            },
-          }}
-        />
-        {citySuggestions.length > 0 && !selectedCity && (
-          <Box
-            sx={{
-              backgroundColor: 'background.paper',
-              borderRadius: '16px',
-              mt: '4px',
-              overflow: 'hidden',
-            }}
+        {/* Bloc 3 - Niveau d'expérience */}
+        <Box>
+          <Typography
+            variant="inherit"
+            sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: 'text.primary', mb: '8px' }}
           >
-            {citySuggestions.map((city) => (
-              <Box
-                key={city.code}
-                onClick={() => handleSelectCity(city)}
-                sx={{
-                  px: '16px',
-                  py: '10px',
-                  cursor: 'pointer',
-                  '&:hover': { backgroundColor: 'background.hover' },
-                }}
-              >
-                <Typography
-                  variant="inherit"
-                  sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', color: 'text.primary' }}
-                >
-                  {city.nom} {city.codesPostaux?.[0] && `(${city.codesPostaux[0]})`}
-                </Typography>
-              </Box>
-            ))}
+            Niveau d'expérience
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {EXPERIENCE_LEVELS.map((level) => {
+              const active = selectedExperience.has(level);
+              return (
+                <Box key={level} onClick={() => handleToggleExperience(level)} sx={chipSx(active)}>
+                  {level}
+                  {active && <CheckIcon sx={{ fontSize: 14 }} />}
+                </Box>
+              );
+            })}
           </Box>
-        )}
-      </Box>
-
-      {/* Bloc 3 - Niveau d'expérience */}
-      <Box>
-        <Typography
-          variant="inherit"
-          sx={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 600, color: 'text.primary', mb: '8px' }}
-        >
-          Niveau d'expérience
-        </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          {EXPERIENCE_LEVELS.map((level) => {
-            const active = selectedExperience.has(level);
-            return (
-              <Box key={level} onClick={() => handleToggleExperience(level)} sx={chipSx(active)}>
-                {level}
-                {active && <CheckIcon sx={{ fontSize: 14 }} />}
-              </Box>
-            );
-          })}
         </Box>
-      </Box>
 
       </Box>
 

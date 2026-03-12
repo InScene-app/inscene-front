@@ -82,7 +82,7 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
 
     useEffect(() => {
         if (!currentUserId || !finalId || isOwner) return;
-        getFollowingIds(currentUserId).then(ids => setIsFollowing(ids.includes(finalId))).catch(() => {});
+        getFollowingIds(currentUserId).then(ids => setIsFollowing(ids.includes(finalId))).catch(() => { });
     }, [currentUserId, finalId, isOwner]);
 
     const handleToggleFollow = async () => {
