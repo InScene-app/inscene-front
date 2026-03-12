@@ -14,7 +14,7 @@ interface DetailLayoutProps {
   onToggleEdit?: () => void;
 }
 
-export default function DetailLayout({ children, isSaved = false, onToggleSave, onShare, isOwner = false, isEditing = false, onToggleEdit }: DetailLayoutProps) {
+export default function DetailLayout({ children, isSaved = false, onToggleSave, onShare, isOwner = false, onToggleEdit }: DetailLayoutProps) {
   const navigate = useNavigate();
 
   const handleSettings = () => {
