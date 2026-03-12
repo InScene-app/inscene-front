@@ -47,11 +47,12 @@ export default function JobSelectorDialog({ open, onClose, categories, editJobCo
                                             icon={active ? <CheckIcon sx={{ fontSize: 14 }} /> : undefined}
                                             sx={{
                                                 fontSize: '13px', fontWeight: active ? 600 : 400,
-                                                backgroundColor: active ? 'primary.main' : 'background.paper',
+                                                backgroundColor: active ? '#EB6640' : 'background.paper',
                                                 color: active ? '#FFFFFF' : 'text.primary',
-                                                border: active ? 'none' : '1px solid #E0E0E0',
+                                                border: active ? 'none' : '1px solid',
+                                                borderColor: active ? 'none' : 'background.border',
                                                 cursor: 'pointer', '& .MuiChip-icon': { color: '#FFFFFF' },
-                                                '&:hover': { backgroundColor: active ? 'primary.dark' : 'background.hover' },
+                                                '&:hover': { backgroundColor: active ? '#E67E50' : 'background.hover' },
                                             }} />
                                     );
                                 })}

@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+import type { PaletteMode } from '@mui/material/styles';
 
 const lightPalette = {
   mode: 'light',
@@ -95,7 +96,7 @@ const sharedConfig = {
   },
 };
 
-export const getTheme = (mode = 'light') =>
+export const getTheme = (mode: PaletteMode = 'light') =>
   createTheme({
     palette: mode === 'dark' ? darkPalette : lightPalette,
     ...sharedConfig,

@@ -27,9 +27,6 @@ export default function ProfileMedia({
     const videoInputRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const hasMedia = pictures.length > 0 || videos.length > 0 || otherFiles.length > 0 || isEditing;
-    if (!hasMedia) return null;
-
     return (
         <>
             <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
@@ -48,7 +45,9 @@ export default function ProfileMedia({
                         {pictures.length > 0 ? (
                             <JustifiedPhotoGrid pictures={pictures} maxPerRow={maxPerRow} maxRowHeight={maxRowHeight} />
                         ) : (
-                            <Typography sx={{ textAlign: 'center', color: 'text.secondary', mb: 2 }}>Aucune photo</Typography>
+                            <Typography sx={{ textAlign: 'center', color: 'text.secondary', mb: 2, fontStyle: 'italic' }}>
+                                Pas encore de photos
+                            </Typography>
                         )}
                         {isEditing && (
                             <>
@@ -75,7 +74,9 @@ export default function ProfileMedia({
                                 ))}
                             </Stack>
                         ) : (
-                            <Typography sx={{ textAlign: 'center', color: 'text.secondary', mb: 2 }}>Aucune vidéo</Typography>
+                            <Typography sx={{ textAlign: 'center', color: 'text.secondary', mb: 2, fontStyle: 'italic' }}>
+                                Pas encore de vidéos
+                            </Typography>
                         )}
                         {isEditing && (
                             <>
@@ -94,7 +95,9 @@ export default function ProfileMedia({
                                 ))}
                             </Stack>
                         ) : (
-                            <Typography sx={{ textAlign: 'center', color: 'text.secondary', mb: 2 }}>Aucun fichier</Typography>
+                            <Typography sx={{ textAlign: 'center', color: 'text.secondary', mb: 2, fontStyle: 'italic' }}>
+                                Pas encore de fichiers
+                            </Typography>
                         )}
                         {isEditing && (
                             <>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Typography, Box, Stack, CircularProgress, Button } from '@mui/material';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { usePageLayout } from '../hooks/usePageLayout';
 import AnnouncementCard from '../components/announcement/AnnouncementCard';
 import ProfileCard from '../components/user/ProfileCard';
@@ -58,10 +57,13 @@ export default function Saved() {
         );
     }
 
-    const hasNothing = announcements.length === 0 && savedUsers.length === 0;
+    const filteredAnnouncements = announcements.filter(a => isSaved(a.id));
+    const filteredUsers = savedUsers.filter(u => isUserSaved(u.id));
 
-    const visibleAnnouncements = showAllAnnouncements ? announcements : announcements.slice(0, PREVIEW_COUNT);
-    const visibleUsers = showAllUsers ? savedUsers : savedUsers.slice(0, PREVIEW_COUNT);
+    const hasNothing = filteredAnnouncements.length === 0 && filteredUsers.length === 0;
+
+    const visibleAnnouncements = showAllAnnouncements ? filteredAnnouncements : filteredAnnouncements.slice(0, PREVIEW_COUNT);
+    const visibleUsers = showAllUsers ? filteredUsers : filteredUsers.slice(0, PREVIEW_COUNT);
 
     return (
         <Box>
@@ -71,7 +73,7 @@ export default function Saved() {
 
             {hasNothing ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 8, gap: 2 }}>
-                    <BookmarkIcon sx={{ fontSize: 64, color: 'text.disabled' }} />
+                    <img src="/icons/Sauvergardes.svg" alt="Sauvegardés" style={{ width: 64, height: 64, opacity: 0.4 }} />
                     <Typography color="text.secondary" sx={{ textAlign: 'center' }}>
                         Aucun élément sauvegardé
                     </Typography>
@@ -82,12 +84,12 @@ export default function Saved() {
             ) : (
                 <Stack spacing={4}>
                     {/* Section Annonces */}
-                    {announcements.length > 0 && (
+                    {filteredAnnouncements.length > 0 && (
                         <Box>
                             <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 2 }}>
                                 Annonces
                             </Typography>
-                            <Stack spacing="35px">
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '35px' }}>
                                 {visibleAnnouncements.map((announcement) => (
                                     <AnnouncementCard
                                         key={announcement.id}
@@ -96,8 +98,8 @@ export default function Saved() {
                                         onToggleSave={toggleSave}
                                     />
                                 ))}
-                            </Stack>
-                            {announcements.length > PREVIEW_COUNT && !showAllAnnouncements && (
+                            </Box>
+                            {filteredAnnouncements.length > PREVIEW_COUNT && !showAllAnnouncements && (
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                                     <Button
                                         onClick={() => setShowAllAnnouncements(true)}
@@ -108,7 +110,7 @@ export default function Saved() {
                                             px: 3,
                                         }}
                                     >
-                                        Voir tout ({announcements.length})
+                                        Voir tout ({filteredAnnouncements.length})
                                     </Button>
                                 </Box>
                             )}
@@ -116,7 +118,7 @@ export default function Saved() {
                     )}
 
                     {/* Section Profils */}
-                    {savedUsers.length > 0 && (
+                    {filteredUsers.length > 0 && (
                         <Box>
                             <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 2 }}>
                                 Profils
@@ -131,7 +133,7 @@ export default function Saved() {
                                     />
                                 ))}
                             </Stack>
-                            {savedUsers.length > PREVIEW_COUNT && !showAllUsers && (
+                            {filteredUsers.length > PREVIEW_COUNT && !showAllUsers && (
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                                     <Button
                                         onClick={() => setShowAllUsers(true)}
@@ -142,7 +144,7 @@ export default function Saved() {
                                             px: 3,
                                         }}
                                     >
-                                        Voir tout ({savedUsers.length})
+                                        Voir tout ({filteredUsers.length})
                                     </Button>
                                 </Box>
                             )}

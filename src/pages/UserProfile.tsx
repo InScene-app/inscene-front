@@ -221,7 +221,7 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
                 {/* Top section: desktop = 2 columns, mobile = vertical */}
                 {isDesktop ? (
                     <Box sx={{ display: 'flex', gap: 0, alignItems: 'flex-start', mb: 2 }}>
-                        {/* Left 60%: header + actions + socials */}
+                        {/* Left 60%: header (with actions + socials inside) */}
                         <Box sx={{ flex: '0 0 60%', pr: 3 }}>
                             <ProfileHeader
                                 displayName={displayName} username={username}
@@ -231,20 +231,21 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
                                 onEditFirstName={setEditFirstName} onEditLastName={setEditLastName} onEditLocation={setEditLocation}
                                 onAvatarUpload={makeUploadHandler('Avatar')}
                                 isDesktop
-                            />
-                            {!isOwner && (
-                                <ProfileActions
-                                    isFollowing={isFollowing} followLoading={followLoading}
-                                    onToggleFollow={handleToggleFollow} websiteUrl={user.websiteUrl}
+                            >
+                                {!isOwner && (
+                                    <ProfileActions
+                                        isFollowing={isFollowing} followLoading={followLoading}
+                                        onToggleFollow={handleToggleFollow} websiteUrl={user.websiteUrl}
+                                    />
+                                )}
+                                <ProfileSocials
+                                    isEditing={isEditing}
+                                    socialNetworks={user.socialNetworks}
+                                    editSocials={editSocials}
+                                    onAddSocial={(name, url) => setEditSocials(prev => [...prev, { name, url }])}
+                                    onRemoveSocial={(i) => setEditSocials(prev => prev.filter((_, idx) => idx !== i))}
                                 />
-                            )}
-                            <ProfileSocials
-                                isEditing={isEditing}
-                                socialNetworks={user.socialNetworks}
-                                editSocials={editSocials}
-                                onAddSocial={(name, url) => setEditSocials(prev => [...prev, { name, url }])}
-                                onRemoveSocial={(i) => setEditSocials(prev => prev.filter((_, idx) => idx !== i))}
-                            />
+                            </ProfileHeader>
                         </Box>
 
                         {/* Vertical divider */}
@@ -283,7 +284,7 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
                             onAddSocial={(name, url) => setEditSocials(prev => [...prev, { name, url }])}
                             onRemoveSocial={(i) => setEditSocials(prev => prev.filter((_, idx) => idx !== i))}
                         />
-                        <Divider />
+                        {(activitiesTags.length > 0 || isEditing) && <Divider />}
                         <ProfileActivities
                             activitiesTags={activitiesTags} isEditing={isEditing}
                             editJobCodes={editJobCodes} getJobName={getJobName}
@@ -292,8 +293,6 @@ export default function UserProfile({ userId: propUserId }: UserProfileProps = {
                         />
                     </>
                 )}
-
-                <Divider sx={{ mb: 2 }} />
 
                 <ProfileMedia
                     pictures={pictures} videos={videos} otherFiles={otherFiles}

@@ -1,17 +1,19 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
   Box,
   IconButton,
+  InputBase,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import MessageIcon from '@mui/icons-material/Message';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { ReactElement } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+
+// Filtre CSS : convertit du noir vers #EB6640 (orange)
+const ORANGE_FILTER = 'brightness(0) saturate(100%) invert(49%) sepia(79%) saturate(602%) hue-rotate(330deg) brightness(108%)';
+const DARK_INACTIVE_FILTER = 'invert(1)'; // noir → blanc en dark mode
 
 const HomeIcon = ({ active = false }: { active?: boolean }) => {
   const theme = useTheme();
@@ -29,19 +31,19 @@ const HomeIcon = ({ active = false }: { active?: boolean }) => {
   );
 };
 
-interface MenuItem {
-  label: string;
-  icon: ReactElement;
-  activeIcon?: ReactElement;
-  path: string;
-}
+const menuItems = [
+  { label: 'Saved', iconSrc: '/icons/Sauvergardes.svg', path: '/saved' },
+  { label: 'Notifications', iconSrc: '/icons/Notif.svg', path: '/notifications' },
+  { label: 'Home', iconSrc: null, path: '/' },
+  { label: 'Messages', iconSrc: '/icons/Message.svg', path: '/messages' },
+  { label: 'Account', iconSrc: '/icons/Profil.svg', path: '/account' },
+];
 
-const menuItems: MenuItem[] = [
-  { label: 'Saved', icon: <BookmarkIcon />, path: '/saved' },
-  { label: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
-  { label: 'Home', icon: <HomeIcon />, activeIcon: <HomeIcon active />, path: '/' },
-  { label: 'Messages', icon: <MessageIcon />, path: '/messages' },
-  { label: 'Account', icon: <AccountCircleIcon />, path: '/account' },
+const desktopRightItems = [
+  { label: 'Saved', icon: '/icons/Sauvergardes.svg', path: '/saved' },
+  { label: 'Messages', icon: '/icons/Message.svg', path: '/messages' },
+  { label: 'Notifications', icon: '/icons/Notif.svg', path: '/notifications' },
+  { label: 'Account', icon: '/icons/Profil.svg', path: '/account' },
 ];
 
 export default function Navigation() {
@@ -49,6 +51,27 @@ export default function Navigation() {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [searchParams] = useSearchParams();
+  const [navSearch, setNavSearch] = useState(searchParams.get('q') || '');
+  const navDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync input when URL params change (e.g. back button, or navigating away and back)
+  useEffect(() => {
+    setNavSearch(searchParams.get('q') || '');
+  }, [searchParams]);
+
+  const handleNavSearch = (value: string) => {
+    setNavSearch(value);
+    if (navDebounceRef.current) clearTimeout(navDebounceRef.current);
+    navDebounceRef.current = setTimeout(() => {
+      navigate(`/?q=${encodeURIComponent(value)}`, { replace: location.pathname === '/' });
+    }, 400);
+  };
+
+  const submitNavSearch = () => {
+    if (navDebounceRef.current) clearTimeout(navDebounceRef.current);
+    navigate(`/?q=${encodeURIComponent(navSearch)}`, { replace: location.pathname === '/' });
+  };
 
   const currentIndex = menuItems.findIndex((item) => item.path === location.pathname);
 
@@ -76,20 +99,28 @@ export default function Navigation() {
       >
         {menuItems.map((item, index) => {
           const isActive = currentIndex === index;
+          const iconFilter = isActive
+            ? ORANGE_FILTER
+            : theme.palette.mode === 'dark' ? DARK_INACTIVE_FILTER : 'none';
           return (
             <IconButton
               key={item.label}
               onClick={() => navigate(item.path)}
               sx={{
-                color: isActive ? 'primary.main' : 'text.secondary',
-                transition: 'color 0.2s ease',
                 padding: item.label === 'Home' ? 0 : 1,
-                '& .MuiSvgIcon-root': {
-                  fontSize: '24px',
-                },
+                transition: 'opacity 0.2s ease',
               }}
             >
-              {isActive && item.activeIcon ? item.activeIcon : item.icon}
+              {item.label === 'Home' ? (
+                <HomeIcon active={isActive} />
+              ) : (
+                <Box
+                  component="img"
+                  src={item.iconSrc!}
+                  alt={item.label}
+                  sx={{ width: 24, height: 24, filter: iconFilter, transition: 'filter 0.2s ease' }}
+                />
+              )}
             </IconButton>
           );
         })}
@@ -97,7 +128,7 @@ export default function Navigation() {
     );
   }
 
-  // Desktop: Top Navigation - Navbar classique
+  // Desktop: Top Navigation
   return (
     <AppBar
       position="fixed"
@@ -106,69 +137,70 @@ export default function Navigation() {
         backgroundColor: theme.palette.background.paper,
         backgroundImage: 'none',
       }}
-      sx={{
-        borderBottom: `1px solid ${theme.palette.divider}`,
-      }}
     >
-      <Toolbar
-        sx={{
-          justifyContent: 'center',
-          gap: 2,
-        }}
-      >
-        {menuItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
+      <Toolbar sx={{ justifyContent: 'space-between', px: 3 }}>
+        {/* Gauche : logo + barre de recherche */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Box
-            key={item.label}
+            component="img"
+            src={location.pathname === '/' ? '/logo/logo_color.svg' : '/logo/logo_black.svg'}
+            alt="InScène"
+            onClick={() => navigate('/')}
             sx={{
-              position: 'relative',
+              width: 50,
+              height: 50,
+              cursor: 'pointer',
+              filter: location.pathname !== '/' && theme.palette.mode === 'dark' ? 'invert(1)' : 'none',
+            }}
+          />
+          <Box
+            sx={{
+              width: 320,
+              display: 'flex',
+              alignItems: 'center',
+              bgcolor: 'background.default',
+              borderRadius: '50px',
+              px: 2,
+              py: 0.75,
             }}
           >
-            <IconButton
-              onClick={() => navigate(item.path)}
-              sx={{
-                color: isActive ? 'primary.main' : 'text.secondary',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  color: 'primary.dark',
-                  '& + .nav-label': {
-                    opacity: 1,
-                    visibility: 'visible',
-                  },
-                },
-              }}
-            >
-              {isActive && item.activeIcon ? item.activeIcon : item.icon}
-            </IconButton>
-            <Box
-              className="nav-label"
-              sx={{
-                position: 'absolute',
-                top: '100%',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                mt: 0.5,
-                fontSize: '0.75rem',
-                fontWeight: 500,
-                color: 'text.primary',
-                backgroundColor: 'background.paper',
-                px: 1.5,
-                py: 0.5,
-                borderRadius: '8px',
-                whiteSpace: 'nowrap',
-                opacity: 0,
-                visibility: 'hidden',
-                transition: 'all 0.2s ease',
-                boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
-                pointerEvents: 'none',
-              }}
-            >
-              {item.label}
-            </Box>
+            <SearchIcon sx={{ fontSize: 18, color: 'text.secondary', mr: 1, flexShrink: 0 }} />
+            <InputBase
+              placeholder="Rechercher..."
+              value={navSearch}
+              onChange={(e) => handleNavSearch(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') submitNavSearch(); }}
+              sx={{ flex: 1, fontSize: '14px' }}
+            />
           </Box>
-          );
-        })}
+        </Box>
+
+        {/* Droite : icônes */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {desktopRightItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            const iconFilter = isActive
+              ? ORANGE_FILTER
+              : theme.palette.mode === 'dark' ? DARK_INACTIVE_FILTER : 'none';
+            return (
+              <IconButton
+                key={item.label}
+                onClick={() => navigate(item.path)}
+                sx={{
+                  transition: 'opacity 0.2s ease',
+                  '&:hover': { opacity: 0.75 },
+                }}
+              >
+                <Box
+                  component="img"
+                  src={item.icon}
+                  alt={item.label}
+                  sx={{ width: 24, height: 24, filter: iconFilter, transition: 'filter 0.2s ease' }}
+                />
+              </IconButton>
+            );
+          })}
+        </Box>
       </Toolbar>
     </AppBar>
   );

@@ -120,6 +120,25 @@ export async function getAnnouncementsByContract(contractType: ContractType): Pr
 }
 
 /**
+ * Postule à une annonce
+ */
+export async function applyToAnnouncement(announcementId: number, userId: number): Promise<void> {
+  await api.post(`/announcement/${announcementId}/apply/${userId}`);
+}
+
+/**
+ * Vérifie si un utilisateur a déjà postulé à une annonce
+ */
+export async function checkApplication(userId: number, announcementId: number): Promise<boolean> {
+  try {
+    const response = await api.get(`/individual/${userId}/applications/${announcementId}`);
+    return response.data !== null && response.data !== undefined;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Crée une nouvelle annonce
  */
 export async function createAnnouncement(data: Partial<AnnouncementResponse>): Promise<Announcement> {

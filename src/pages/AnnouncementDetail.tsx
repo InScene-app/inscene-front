@@ -8,9 +8,10 @@ import AnnouncementDetailsBlock from '../components/announcement/AnnouncementDet
 import AnnouncementProfileBlock from '../components/announcement/AnnouncementProfileBlock';
 import PrimaryButton from '../components/common/PrimaryButton';
 import { formatRelativeDate } from '../utils/dateFormat';
-import { getAnnouncementById } from '../api/announcementService';
+import { getAnnouncementById, checkApplication } from '../api/announcementService';
 import { Announcement } from '../types/announcement';
 import { useFavorites } from '../hooks/useFavorites';
+import { parseJwt } from '../utils/jwt';
 
 export default function AnnouncementDetail() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,7 @@ export default function AnnouncementDetail() {
   const [announcement, setAnnouncement] = useState<Announcement | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasApplied, setHasApplied] = useState(false);
 
   const announcementId = id ? parseInt(id) : 0;
 
@@ -31,6 +33,17 @@ export default function AnnouncementDetail() {
         const data = await getAnnouncementById(parseInt(id));
         setAnnouncement(data);
         setError(null);
+
+        // Vérifier si l'utilisateur a déjà postulé
+        const token = localStorage.getItem('access_token');
+        if (token) {
+          const payload = parseJwt(token);
+          const userId = payload?.sub as number | undefined;
+          if (userId) {
+            const applied = await checkApplication(userId, parseInt(id));
+            setHasApplied(applied);
+          }
+        }
       } catch (err) {
         console.error('Erreur lors du chargement de l\'annonce:', err);
         setError('Impossible de charger l\'annonce');
@@ -143,11 +156,21 @@ export default function AnnouncementDetail() {
 
         </Box>
 
-        {/* Bouton Postuler */}
+        {/* Bouton Postuler / Candidature envoyée */}
         <Box sx={{ mb: 3 }}>
-          <PrimaryButton fullWidth>
-            Postuler
-          </PrimaryButton>
+          {hasApplied ? (
+            <PrimaryButton
+              fullWidth
+              disabled
+              sx={{ opacity: 0.6, cursor: 'default' }}
+            >
+              Candidature envoyée ✓
+            </PrimaryButton>
+          ) : (
+            <PrimaryButton fullWidth onClick={() => navigate(`/announcement/${id}/apply`)}>
+              Postuler
+            </PrimaryButton>
+          )}
         </Box>
 
 

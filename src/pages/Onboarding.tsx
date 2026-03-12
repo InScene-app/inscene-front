@@ -13,17 +13,12 @@ export default function Onboarding() {
     };
 
     const handleIntroNext = () => {
-        // Marquer l'onboarding comme vu en mode normal
-        const isDevMode = import.meta.env.VITE_DEV_MODE === 'true';
-        if (!isDevMode) {
-            localStorage.setItem('hasSeenOnboarding', 'true');
-        }
-        // Rediriger vers profile-setup (WelcomeStep sans navbar)
+        localStorage.setItem('hasSeenOnboarding', 'true');
         navigate('/profile-setup');
     };
 
     return (
-        <Box>
+        <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
             {step === 0 && <OnboardingCarousel onComplete={handleCarouselComplete} />}
             {step === 1 && <OnboardingIntro onNext={handleIntroNext} />}
         </Box>

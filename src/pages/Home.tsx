@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Typography, Box, Stack, CircularProgress, InputBase, IconButton, useMediaQuery } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import EventIcon from '@mui/icons-material/Event';
@@ -7,7 +8,7 @@ import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import { usePageLayout } from '../hooks/usePageLayout';
 import AnnouncementCard from '../components/announcement/AnnouncementCard';
 import AnnouncementDetailPanel from '../components/announcement/AnnouncementDetailPanel';
-import { getAnnouncements, searchAnnouncements, getAnnouncementsByContract } from '../api/announcementService';
+import { getAnnouncements, searchAnnouncements } from '../api/announcementService';
 import { getFollowingIds } from '../api/userService';
 import { parseJwt } from '../utils/jwt';
 import { Announcement, ContractType } from '../types/announcement';
@@ -31,12 +32,13 @@ export default function Home() {
   usePageLayout();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const { isSaved, toggleSave } = useFavorites();
+  const [searchParams] = useSearchParams();
   const [allAnnouncements, setAllAnnouncements] = useState<Announcement[]>([]);
   const [displayedAnnouncements, setDisplayedAnnouncements] = useState<Announcement[]>([]);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
   const [followingIds, setFollowingIds] = useState<number[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -57,7 +59,10 @@ export default function Home() {
         setLoading(true);
         const data = await getAnnouncements();
         setAllAnnouncements(data);
-        setDisplayedAnnouncements(data);
+        const q = searchParams.get('q') || '';
+        if (!q) {
+          setDisplayedAnnouncements(data);
+        }
         setError(null);
       } catch (err) {
         console.error('Erreur lors du chargement des annonces:', err);
@@ -67,7 +72,15 @@ export default function Home() {
       }
     };
     fetchAnnouncements();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // React to URL query changes (navbar search)
+  useEffect(() => {
+    const q = searchParams.get('q') || '';
+    setSearchQuery(q);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    performSearch(q);
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Load following IDs for "Réseaux" filter
   useEffect(() => {
@@ -170,38 +183,40 @@ export default function Home() {
           Vous rêvez, nous connectons
         </Typography>
 
-        {/* Search bar */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            borderRadius: '70px',
-            backgroundColor: 'background.paper',
-            boxShadow: '0 3px 6px 0 rgba(83, 82, 104, 0.10)',
-            border: (theme) => theme.palette.mode === 'dark' ? '1px solid' : '1px solid transparent',
-            borderColor: 'background.border',
-            px: 2.5,
-            py: 0.5,
-            mb: 3,
-          }}
-        >
-          <InputBase
-            placeholder="CDD monteur à Lyon"
-            value={searchQuery}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
+        {/* Search bar - mobile only */}
+        {!isDesktop && (
+          <Box
             sx={{
-              flex: 1,
-              fontSize: '15px',
-              '& .MuiInputBase-input': {
-                py: 1.2,
-              },
+              display: 'flex',
+              alignItems: 'center',
+              borderRadius: '70px',
+              backgroundColor: 'background.paper',
+              boxShadow: '0 3px 6px 0 rgba(83, 82, 104, 0.10)',
+              border: (theme) => theme.palette.mode === 'dark' ? '1px solid' : '1px solid transparent',
+              borderColor: 'background.border',
+              px: 2.5,
+              py: 0.5,
+              mb: 3,
             }}
-          />
-          <IconButton onClick={handleSearchSubmit} sx={{ p: 0.5 }}>
-            <SearchIcon sx={{ color: 'primary.main', fontSize: 26 }} />
-          </IconButton>
-        </Box>
+          >
+            <InputBase
+              placeholder="CDD monteur à Lyon"
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
+              sx={{
+                flex: 1,
+                fontSize: '15px',
+                '& .MuiInputBase-input': {
+                  py: 1.2,
+                },
+              }}
+            />
+            <IconButton onClick={handleSearchSubmit} sx={{ p: 0.5 }}>
+              <SearchIcon sx={{ color: 'primary.main', fontSize: 26 }} />
+            </IconButton>
+          </Box>
+        )}
 
         {/* Filter toggles */}
         <Stack direction="row" spacing={1.5} sx={{ mb: 4 }}>
@@ -266,6 +281,7 @@ export default function Home() {
                   onToggleSave={toggleSave}
                   isSelected={selectedAnnouncement?.id === announcement.id}
                   onSelect={setSelectedAnnouncement}
+                  sx={{ boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}
                 />
               ))}
             </Stack>

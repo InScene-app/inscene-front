@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, Box, Typography, Avatar, Stack } from '@mui/material';
+import { Card, CardContent, Box, Typography, Avatar, Stack, SxProps, Theme } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AnnouncementImage from './AnnouncementImage';
 import AnnouncementTags from './AnnouncementTags';
@@ -13,9 +13,10 @@ interface AnnouncementCardProps {
   onToggleSave?: (id: number) => void;
   isSelected?: boolean;
   onSelect?: (ann: Announcement) => void;
+  sx?: SxProps<Theme>;
 }
 
-export default function AnnouncementCard({ announcement, isSaved = false, onToggleSave, isSelected, onSelect }: AnnouncementCardProps) {
+export default function AnnouncementCard({ announcement, isSaved = false, onToggleSave, isSelected, onSelect, sx }: AnnouncementCardProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -42,6 +43,7 @@ export default function AnnouncementCard({ announcement, isSaved = false, onTogg
         '&:hover': {
           transform: onSelect ? undefined : 'translateY(-2px)',
         },
+        ...sx,
       }}
     >
       <AnnouncementImage imageUrl={announcement.imageUrl} title={announcement.title} />

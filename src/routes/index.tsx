@@ -14,6 +14,7 @@ import UserProfile from '../pages/UserProfile';
 import Onboarding from '../pages/Onboarding';
 import ProfileSetupPage from '../pages/ProfileSetupPage';
 import Settings from '../pages/Settings';
+import ApplicationFlowPage from '../pages/ApplicationFlowPage';
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: '/settings',
         element: <Settings />,
+      },
+      {
+        path: '/announcement/:id/apply',
+        element: <ApplicationFlowPage />,
       },
       {
         path: '/',

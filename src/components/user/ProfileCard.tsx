@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Avatar, Chip, IconButton } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+const orangeFilter = 'brightness(0) saturate(100%) invert(52%) sepia(75%) saturate(551%) hue-rotate(334deg) brightness(101%)';
 
 interface ProfileCardProps {
     user: {
@@ -102,12 +101,15 @@ export default function ProfileCard({ user, isSaved = false, onToggleSave }: Pro
                         onToggleSave(user.id);
                     }}
                     sx={{
-                        color: isSaved ? 'primary.main' : 'text.secondary',
                         flexShrink: 0,
-                        '&:hover': { backgroundColor: 'transparent', color: 'primary.main' },
+                        '&:hover': { backgroundColor: 'transparent' },
                     }}
                 >
-                    {isSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+                    <img
+                        src={isSaved ? '/icons/Sauvergardes.svg' : '/icons/Sauvergardes_empty.svg'}
+                        alt={isSaved ? 'Sauvegardé' : 'Sauvegarder'}
+                        style={{ width: 18, height: 18, filter: isSaved ? orangeFilter : undefined }}
+                    />
                 </IconButton>
             )}
         </Box>

@@ -142,7 +142,7 @@ export default function JustifiedPhotoGrid({ pictures, gap = 4, maxRowHeight = 2
         return <Box ref={containerRef} />;
     }
 
-    const rows = buildRows(imagesWithSize, containerWidth, gap, maxRowHeight);
+    const rows = buildRows(imagesWithSize, containerWidth, gap, maxRowHeight, maxPerRow);
 
     return (
         <Box ref={containerRef} sx={{ display: 'flex', flexDirection: 'column', gap: `${gap}px` }}>

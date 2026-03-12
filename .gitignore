@@ -9,8 +9,6 @@ dist-ssr
 build
 *.local
 
-.claude
-
 # Environment variables
 .env
 .env.local
