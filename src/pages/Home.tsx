@@ -7,7 +7,7 @@ import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import { usePageLayout } from '../hooks/usePageLayout';
 import AnnouncementCard from '../components/announcement/AnnouncementCard';
 import AnnouncementDetailPanel from '../components/announcement/AnnouncementDetailPanel';
-import { getAnnouncements, searchAnnouncements, getAnnouncementsByContract } from '../api/announcementService';
+import { getAnnouncements, searchAnnouncements } from '../api/announcementService';
 import { getFollowingIds } from '../api/userService';
 import { parseJwt } from '../utils/jwt';
 import { Announcement, ContractType } from '../types/announcement';

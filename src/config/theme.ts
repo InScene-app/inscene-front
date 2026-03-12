@@ -1,6 +1,7 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, PaletteOptions } from '@mui/material/styles';
+import type { PaletteMode, ThemeOptions } from '@mui/material';
 
-const lightPalette = {
+const lightPalette: PaletteOptions = {
   mode: 'light',
   primary: {
     main: '#EB6640',     // orange principal — boutons, icônes actives, textes accent
@@ -31,7 +32,7 @@ const lightPalette = {
   divider: '#D9D9D9',
 };
 
-const darkPalette = {
+const darkPalette: PaletteOptions = {
   mode: 'dark',
   primary: {
     main: '#F2F6FC',   // icônes actives navbar, boutons — bleu très clair
@@ -62,7 +63,7 @@ const darkPalette = {
   divider: '#95BDE2',
 };
 
-const sharedConfig = {
+const sharedConfig: ThemeOptions = {
   typography: {
     fontFamily: 'Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
     h1: { fontFamily: 'Quicksand, sans-serif' },
@@ -95,7 +96,7 @@ const sharedConfig = {
   },
 };
 
-export const getTheme = (mode = 'light') =>
+export const getTheme = (mode: PaletteMode = 'light') =>
   createTheme({
     palette: mode === 'dark' ? darkPalette : lightPalette,
     ...sharedConfig,
